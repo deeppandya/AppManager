@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <string-array name="sortbyApps">
+        <item>@string/sortName</item>
+        <item>@string/lastModified</item>
+        <item>@string/sortSize</item>
+    </string-array>
+</resources>

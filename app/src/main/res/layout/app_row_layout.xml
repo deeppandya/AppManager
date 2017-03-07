@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:minHeight="@dimen/minimal_row_size"
+    android:paddingLeft="@dimen/minimal_material_padding"
+    android:paddingRight="@dimen/minimal_material_padding">
+
+    <ImageView
+        android:id="@+id/apk_icon"
+        android:layout_width="@dimen/minimal_icon_size"
+        android:layout_height="@dimen/minimal_icon_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="8dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/firstline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:ellipsize="middle"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorTertiary"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/properties"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/ripple"
+        android:clickable="true"
+        android:padding="16dp"
+        android:src="@drawable/ic_more_black" />
+
+</LinearLayout>

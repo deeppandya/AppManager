@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">AppManager</string>
+    <string name="openwith">Open with</string>
+    <string name="noappfound">No app found</string>
+    <string name="clipboard_path_copy">path copied</string>
+    <string name="not_allowed">Not allowed</string>
+    <string name="sort">Sort</string>
+    <string name="sortName">Name</string>
+    <string name="lastModified">Last Modified</string>
+    <string name="sortSize">Size</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="sortby">Sort By</string>
+    <string name="open">Open</string>
+    <string name="backup">Backup</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="properties">Properties</string>
+    <string name="play">Open in Play store</string>
+    <string name="share">Share</string>
 </resources>
