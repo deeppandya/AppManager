@@ -3,14 +3,10 @@ package com.deeppandya.appmanager.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,19 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.deeppandya.appmanager.MainActivity;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
 import com.deeppandya.appmanager.enums.AppCategory;
-import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.enums.SortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.PersistanceManager;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 

@@ -8,7 +8,7 @@ import com.deeppandya.appmanager.R;
 
 /**
  * Purpose is to prevent uninstall of the app by registering as a device administrator
- * Created by m_gayraud on 2015-02-19.
+ * Created by d_pandya on 3/8/17.
  */
 public class UninstallReceiver extends DeviceAdminReceiver {
 

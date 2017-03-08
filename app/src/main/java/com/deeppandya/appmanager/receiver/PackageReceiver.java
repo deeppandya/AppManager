@@ -7,6 +7,10 @@ import android.content.IntentFilter;
 
 import com.deeppandya.appmanager.asynctask.AppListLoader;
 
+/**
+ * Created by d_pandya on 3/7/17.
+ */
+
 public class PackageReceiver extends BroadcastReceiver {
 
     private AppListLoader listLoader;

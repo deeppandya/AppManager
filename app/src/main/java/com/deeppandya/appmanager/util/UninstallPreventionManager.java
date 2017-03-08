@@ -14,7 +14,7 @@ import com.deeppandya.appmanager.receiver.UninstallReceiver;
 
 /**
  * Manage Uninstall prevention interactions
- * Created by m_gayraud on 2016-02-05.
+ * Created by d_pandya on 3/8/17.
  */
 public class UninstallPreventionManager {
 

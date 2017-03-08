@@ -21,34 +21,6 @@ public class AppModel {
 
     }
 
-//    public AppModel(Parcel im) {
-//        appName = im.readString();
-//        appDesc = im.readString();
-//        permissions = im.readString();
-//        symlink = im.readString();
-//        date = im.readLong();
-//        formattedDate = im.readString();
-//        size = im.readString();
-//        longSize=im.readLong();
-//    }
-//
-//
-//    public int describeContents() {
-
-//        return 0;
-//    }
-//
-//    public void writeToParcel(Parcel p1, int p2) {
-//        p1.writeString(appName);
-//        p1.writeString(appDesc);
-//        p1.writeCharArray(permissions);
-//        p1.writeString(symlink);
-//        p1.writeLong(date);
-//        p1.writeString(formattedDate);
-//        p1.writeString(size);
-//        p1.writeLong(longSize);
-//    }
-
     private Drawable appIcon;
     private String appName;
     private String appDesc;
@@ -59,17 +31,6 @@ public class AppModel {
     private String formattedDate = "";
     private String packageName;
     private AppType appType;
-
-//    public static final Parcelable.Creator<AppModel> CREATOR =
-//            new Parcelable.Creator<AppModel>() {
-//                public AppModel createFromParcel(Parcel in) {
-//                    return new AppModel(in);
-//                }
-//
-//                public AppModel[] newArray(int size) {
-//                    return new AppModel[size];
-//                }
-//            };
 
     public String getPackageName() {
         return packageName;
