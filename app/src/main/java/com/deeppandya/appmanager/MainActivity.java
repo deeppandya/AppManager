@@ -12,12 +12,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.AppListLoader;
+import com.deeppandya.appmanager.enums.AppCategory;
+import com.deeppandya.appmanager.enums.SortOrder;
+import com.deeppandya.appmanager.enums.SortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.DividerItemDecoration;
+import com.deeppandya.appmanager.util.PersistanceManager;
 
 import java.util.List;
 
@@ -25,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
-    int asc, sortby;
-    public SharedPreferences Sp;
 
     public static final int ID_LOADER_APP_LIST = 0;
 
@@ -35,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        setToolbarTitle();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mAdapter = new AppAdapter(MainActivity.this);
+        mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this);
 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -47,10 +51,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        mAdapter.setAppCategory(getAppcategory());
+
         recyclerView.setAdapter(mAdapter);
 
         getSupportLoaderManager().initLoader(ID_LOADER_APP_LIST,null,this);
 
+    }
+
+    private void setToolbarTitle() {
+        if(getAppcategory()==AppCategory.UNINSTALL){
+            getSupportActionBar().setTitle(getResources().getString(R.string.uninstall_manager));
+        }else if(getAppcategory()==AppCategory.BACKUP){
+            getSupportActionBar().setTitle(getResources().getString(R.string.backup_manager));
+        }else if(getAppcategory()==AppCategory.PERMISSIONS){
+            getSupportActionBar().setTitle(getResources().getString(R.string.permission_manager));
+        }else if(getAppcategory()==AppCategory.PACKAGE){
+            getSupportActionBar().setTitle(getResources().getString(R.string.package_manager));
+        }
+    }
+
+    public AppCategory getAppcategory(){
+        if(getIntent()!=null && getIntent().getSerializableExtra("category")!=null){
+            return (AppCategory)getIntent().getSerializableExtra("category");
+        }
+        return AppCategory.UNINSTALL;
     }
 
     @Override
@@ -69,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sortby:
-                CommonFunctions.showSortDialog(MainActivity.this);
+                showSortDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -78,12 +103,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<AppModel>> onCreateLoader(int id, Bundle args) {
-        return new AppListLoader(MainActivity.this, sortby, asc);
+        return new AppListLoader(MainActivity.this);
     }
 
     @Override
     public void onLoadFinished(Loader<List<AppModel>> loader, List<AppModel> data) {
 // set new data to adapter
+
+        recyclerView.setVisibility(View.VISIBLE);
+        findViewById(R.id.mainProgress).setVisibility(View.GONE);
+
         mAdapter.setAppList(data);
         mAdapter.notifyDataSetChanged();
     }
@@ -93,14 +122,46 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter.setAppList(null);
     }
 
-    public void getSortModes() {
-        int t = Integer.parseInt(Sp.getString("sortbyApps", "0"));
-        if (t <= 2) {
-            sortby = t;
-            asc = 1;
-        } else if (t > 2) {
-            asc = -1;
-            sortby = t - 3;
-        }
+    public void showSortDialog() {
+        String[] sort = getResources().getStringArray(R.array.sortbyApps);
+        SortType current = PersistanceManager.getSortType(MainActivity.this);
+        MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(MainActivity.this);
+        materialDialogBuilder.items(sort).itemsCallbackSingleChoice(current.getSortTypeValue(), new MaterialDialog.ListCallbackSingleChoice() {
+            @Override
+            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                return true;
+            }
+        });
+        materialDialogBuilder.positiveText(R.string.ascending).positiveColor(getResources().getColor(R.color.colorAccent));
+        materialDialogBuilder.negativeText(R.string.descending).negativeColor(getResources().getColor(R.color.colorAccent));
+        materialDialogBuilder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                int which = dialog.getSelectedIndex();
+
+                PersistanceManager.setSortOrder(MainActivity.this,SortOrder.ASC);
+                PersistanceManager.setSortType(MainActivity.this,SortType.getSortTypeByInt(which));
+
+                getSupportLoaderManager().restartLoader(MainActivity.ID_LOADER_APP_LIST, null, MainActivity.this);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                int which = dialog.getSelectedIndex();
+
+                PersistanceManager.setSortOrder(MainActivity.this,SortOrder.DESC);
+                PersistanceManager.setSortType(MainActivity.this,SortType.getSortTypeByInt(which));
+
+                getSupportLoaderManager().restartLoader(MainActivity.ID_LOADER_APP_LIST, null, MainActivity.this);
+                dialog.dismiss();
+            }
+        });
+        materialDialogBuilder.title(R.string.sortby);
+        materialDialogBuilder.build().show();
     }
+
 }

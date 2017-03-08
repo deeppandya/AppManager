@@ -1,10 +1,10 @@
 package com.deeppandya.appmanager.model;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.util.CommonFunctions;
 
 import java.util.Calendar;
@@ -13,134 +13,136 @@ import java.util.Calendar;
  * Created by d_pandya on 3/7/17.
  */
 
-public class AppModel implements Parcelable {
+public class AppModel {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    public AppModel(Parcel im) {
-        title = im.readString();
-        desc = im.readString();
-        permissions = im.readString();
-        symlink = im.readString();
-        int j = im.readInt();
-        date = im.readLong();
-        int i = im.readInt();
-        if (i == 0) {
-            header = false;
-        } else {
-            header = true;
-        } if (j == 0) {
-            isDirectory = false;
-        } else {
-            isDirectory= true;
-        }
-        // don't save bitmaps in parcel, it might exceed the allowed transaction threshold
-        //Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
-        // Convert Bitmap to Drawable:
-        //imageId = new BitmapDrawable(bitmap);
-        date1 = im.readString();
-        size = im.readString();
-        longSize=im.readLong();
+    public AppModel(){
+
     }
 
+//    public AppModel(Parcel im) {
+//        appName = im.readString();
+//        appDesc = im.readString();
+//        permissions = im.readString();
+//        symlink = im.readString();
+//        date = im.readLong();
+//        formattedDate = im.readString();
+//        size = im.readString();
+//        longSize=im.readLong();
+//    }
+//
+//
+//    public int describeContents() {
 
-    public int describeContents() {
-        // TODO: Implement this method
-        return 0;
-    }
+//        return 0;
+//    }
+//
+//    public void writeToParcel(Parcel p1, int p2) {
+//        p1.writeString(appName);
+//        p1.writeString(appDesc);
+//        p1.writeCharArray(permissions);
+//        p1.writeString(symlink);
+//        p1.writeLong(date);
+//        p1.writeString(formattedDate);
+//        p1.writeString(size);
+//        p1.writeLong(longSize);
+//    }
 
-    public void writeToParcel(Parcel p1, int p2) {
-        p1.writeString(title);
-        p1.writeString(desc);
-        p1.writeString(permissions);
-        p1.writeString(symlink);
-        p1.writeInt(isDirectory?1:0);
-        p1.writeLong(date);
-        p1.writeInt(header ? 1 : 0);
-        //p1.writeParcelable(imageId.getBitmap(), p2);
-        p1.writeString(date1);
-        p1.writeString(size);
-        p1.writeLong(longSize);
-        // TODO: Implement this method
-    }
-
-    private BitmapDrawable imageId;
-    private String title;
-    private String desc;
-    private String permissions;
+    private Drawable appIcon;
+    private String appName;
+    private String appDesc;
+    private CharSequence[] permissions;
     private String symlink;
     private String size;
-    private boolean isDirectory;
     private long date = 0,longSize=0;
-    private String date1 = "";
-    private boolean header;
-    //same as hfile.modes but different than openmode in Main.java
-    //private OpenMode mode = OpenMode.FILE;
+    private String formattedDate = "";
+    private String packageName;
+    private AppType appType;
 
-    public AppModel(BitmapDrawable imageId, String title, String desc, String permissions,
-                          String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
-        this.imageId = imageId;
-        this.title = title;
-        this.desc = desc;
-        this.permissions = permissions.trim();
-        this.symlink = symlink.trim();
+//    public static final Parcelable.Creator<AppModel> CREATOR =
+//            new Parcelable.Creator<AppModel>() {
+//                public AppModel createFromParcel(Parcel in) {
+//                    return new AppModel(in);
+//                }
+//
+//                public AppModel[] newArray(int size) {
+//                    return new AppModel[size];
+//                }
+//            };
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public Drawable getAppIcon() {
+        return appIcon;
+    }
+
+    public void setAppIcon(Drawable appIcon){this.appIcon = appIcon;}
+    public String getAppDesc() {
+        return appDesc.toString();
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getAppName() {
+        return appName.toString();
+    }
+
+    public void setAppDesc(String appDesc) {
+        this.appDesc = appDesc;
+    }
+
+    public void setSize(String size) {
         this.size = size;
-        this.header = header;
-        this.longSize=longSize;
-        this.isDirectory = isDirectory;
-        if (!date.trim().equals("")) {
-            this.date = Long.parseLong(date);
-            this.date1 = CommonFunctions.getdate(this.date, CURRENT_YEAR);
-        }
-    }
-
-    public static final Parcelable.Creator<AppModel> CREATOR =
-            new Parcelable.Creator<AppModel>() {
-                public AppModel createFromParcel(Parcel in) {
-                    return new AppModel(in);
-                }
-
-                public AppModel[] newArray(int size) {
-                    return new AppModel[size];
-                }
-            };
-
-    public Drawable getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(BitmapDrawable imageId){this.imageId=imageId;}
-    public String getDesc() {
-        return desc.toString();
-    }
-
-
-    public String getTitle() {
-        return title.toString();
-    }
-
-    public boolean isDirectory() {
-        return isDirectory;
     }
 
     public String getSize() {
         return size;
     }
 
-    public long getlongSize() {
+    public void setLongSize(long longSize) {
+        this.longSize = longSize;
+    }
+
+    public long getLongSize() {
         return longSize;
     }
 
-    public String getDate() {
-        return date1;
+    public void setDate(long date) {
+        this.date = date;
+        setFormattedDate(CommonFunctions.getdate(this.date, CURRENT_YEAR));
     }
 
-    public long getDate1() {
+    public long getDate() {
         return date;
     }
 
-    public String getPermissions() {
+    public void setFormattedDate(String formattedDate) {
+        this.formattedDate = formattedDate;
+    }
+
+    public String getFormattedDate() {
+        return formattedDate;
+    }
+
+    public void setPermissions(CharSequence[] permissions) {
+        this.permissions = permissions;
+    }
+
+    public CharSequence[] getPermissions() {
         return permissions;
+    }
+
+    public void setSymlink(String symlink) {
+        this.symlink = symlink;
     }
 
     public String getSymlink() {
@@ -153,8 +155,16 @@ public class AppModel implements Parcelable {
         } else return false;
     }
 
+    public AppType getAppType() {
+        return appType;
+    }
+
+    public void setAppType(AppType appType) {
+        this.appType = appType;
+    }
+
     @Override
     public String toString() {
-        return title + "\n" + desc;
+        return appName + "\n" + appDesc;
     }
 }

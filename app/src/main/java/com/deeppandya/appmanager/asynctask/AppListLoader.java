@@ -2,17 +2,23 @@ package com.deeppandya.appmanager.asynctask;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.AsyncTaskLoader;
 import android.text.format.Formatter;
 
+import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.enums.SortOrder;
+import com.deeppandya.appmanager.enums.SortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageReceiver;
+import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.ConfigChange;
 import com.deeppandya.appmanager.util.FileListSorter;
+import com.deeppandya.appmanager.util.PersistanceManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,14 +35,15 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
     private PackageReceiver packageReceiver;
     private Context context;
     private List<AppModel> mApps;
-    private int sortBy, asc;
+    private SortOrder sortOrder;
+    private SortType sortType;
 
-    public AppListLoader(Context context, int sortBy, int asc) {
+    public AppListLoader(Context context) {
         super(context);
 
         this.context = context;
-        this.sortBy = sortBy;
-        this.asc = asc;
+        this.sortType = PersistanceManager.getSortType(context);
+        this.sortOrder = PersistanceManager.getSortOrder(context);
 
         /**
          * using global context because of the fact that loaders are supposed to be used
@@ -62,14 +69,31 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
 
             String label = object.loadLabel(packageManager).toString();
 
-            mApps.add(new AppModel(new BitmapDrawable(context.getResources(),
-                    BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher)),
-                    label == null ? object.packageName : label, object.sourceDir,
-                    object.packageName, object.flags + "", Formatter.formatFileSize(getContext(), sourceDir.length()),
-                    sourceDir.length(), false, sourceDir.lastModified()+"", false));
+            AppModel appModel=new AppModel();
+            appModel.setPackageName(object.packageName);
+            appModel.setAppIcon(object.loadIcon(packageManager) !=null ? object.loadIcon(packageManager): new BitmapDrawable(context.getResources(),BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher)));
+            appModel.setAppName(label == null ? object.packageName : label);
+            appModel.setAppDesc(object.sourceDir);
+            appModel.setPermissions(getAppPermissions(packageManager,object.packageName));
+            //appModel.setPermissions(object.permission);
+            appModel.setSymlink(object.flags+"");
+            appModel.setSize(Formatter.formatFileSize(getContext(), sourceDir.length()));
+            appModel.setLongSize(sourceDir.length());
+            appModel.setDate(sourceDir.lastModified());
 
-            Collections.sort(mApps, new FileListSorter(0, sortBy, asc, false));
+            if ((object.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                // System app
+                appModel.setAppType(AppType.SYSTEMAPP);
+            } else {
+                // User installed app
+                appModel.setAppType(AppType.USERAPP);
+            }
+
+            mApps.add(appModel);
         }
+
+        Collections.sort(mApps, new FileListSorter(sortType, sortOrder));
+
         return mApps;
     }
 
@@ -155,5 +179,17 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
      */
     private void onReleaseResources(List<AppModel> layoutelementsList) {
 
+    }
+
+    private CharSequence[] getAppPermissions(PackageManager packageManager, String packageName) {
+
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+            return packageInfo.requestedPermissions;
+        } catch (PackageManager.NameNotFoundException ex) {
+            ex.getMessage();
+        }
+
+        return new CharSequence[0];
     }
 }

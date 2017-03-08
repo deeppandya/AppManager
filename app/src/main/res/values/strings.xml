@@ -17,4 +17,21 @@
     <string name="properties">Properties</string>
     <string name="play">Open in Play store</string>
     <string name="share">Share</string>
+    <string name="uninstall_msg">Uninstall unused apps to free storage</string>
+    <string name="backup_msg">Backup installed app\'s APK file</string>
+    <string name="app_permissions">App Permissions</string>
+    <string name="permission_msg">Check permissions for installed apps.</string>
+    <string name="app_package_name">App Package Name</string>
+    <string name="package_msg">See installed app\'s package name for devs</string>
+    <string name="permission">Permissions</string>
+    <string name="copying_apk">Copying apk to %s</string>
+    <string name="uninstall_manager">Uninstall manager</string>
+    <string name="backup_manager">APK Backup manager</string>
+    <string name="permission_manager">Permissions manager</string>
+    <string name="package_manager">App package manager</string>
+    <string name="ok">Ok</string>
+    <string name="permission_desc">Permission details</string>
+    <string name="no_permission">No permissions</string>
+    <string name="beware_unregistering_device_admin">Warning: If this option is deactivated, anyone can uninstall App manager and access all apps.</string>
+    <string name="add_admin_extra_app_text">Activate this option to allow Hexlock to ask for a passcode if a user tries to uninstall this app.</string>
 </resources>

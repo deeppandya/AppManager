@@ -4,13 +4,7 @@
         android:id="@+id/open"
         android:title="@string/open" />
     <item
-        android:id="@+id/backup"
-        android:title="@string/backup" />
-    <item
-        android:id="@+id/unins"
-        android:title="@string/uninstall" />
-    <item
-        android:id="@+id/properties"
+        android:id="@+id/app_properties"
         android:title="@string/properties" />
     <item
         android:id="@+id/play"

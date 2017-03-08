@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/second"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -10,7 +11,7 @@
     android:paddingRight="@dimen/minimal_material_padding">
 
     <ImageView
-        android:id="@+id/apk_icon"
+        android:id="@+id/app_icon"
         android:layout_width="@dimen/minimal_icon_size"
         android:layout_height="@dimen/minimal_icon_size"
         android:layout_gravity="center_vertical"
@@ -25,7 +26,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/firstline"
+            android:id="@+id/app_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
@@ -34,23 +35,77 @@
             android:maxLines="1"
             android:textSize="17sp" />
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorTertiary"
-            android:textSize="13sp" />
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/app_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?android:attr/textColorTertiary"
+                android:maxLines="1"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingRight="8dp"
+                android:ellipsize="end"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnUninstall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:padding="8dp"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/md_transparent"
+                android:visibility="gone"
+                android:text="@string/uninstall"/>
+
+            <Button
+                android:id="@+id/btnBackup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:padding="8dp"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/md_transparent"
+                android:visibility="gone"
+                android:text="@string/backup"/>
+
+            <Button
+                android:id="@+id/btnPermission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:padding="8dp"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/md_transparent"
+                android:visibility="gone"
+                android:text="@string/permission"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/properties"
+        android:id="@+id/app_properties"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:background="@drawable/ripple"
         android:clickable="true"
         android:padding="16dp"
-        android:src="@drawable/ic_more_black" />
+        app:srcCompat="@drawable/ic_more_black" />
 
 </LinearLayout>
