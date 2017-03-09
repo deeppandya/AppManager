@@ -37,13 +37,17 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
     private List<AppModel> mApps;
     private SortOrder sortOrder;
     private SortType sortType;
+    private boolean isUserApps;
+    private boolean isSystemApps;
 
-    public AppListLoader(Context context) {
+    public AppListLoader(Context context,boolean isUserApps,boolean isSystemApps) {
         super(context);
 
         this.context = context;
         this.sortType = PersistanceManager.getSortType(context);
         this.sortOrder = PersistanceManager.getSortOrder(context);
+        this.isUserApps=isUserApps;
+        this.isSystemApps=isSystemApps;
 
         /**
          * using global context because of the fact that loaders are supposed to be used
@@ -75,7 +79,6 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
             appModel.setAppName(label == null ? object.packageName : label);
             appModel.setAppDesc(object.sourceDir);
             appModel.setPermissions(getAppPermissions(packageManager,object.packageName));
-            //appModel.setPermissions(object.permission);
             appModel.setSymlink(object.flags+"");
             appModel.setSize(Formatter.formatFileSize(getContext(), sourceDir.length()));
             appModel.setLongSize(sourceDir.length());
@@ -89,7 +92,13 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
                 appModel.setAppType(AppType.USERAPP);
             }
 
-            mApps.add(appModel);
+            if(!isUserApps && !isSystemApps){
+                mApps.add(appModel);
+            }else if(isUserApps && appModel.getAppType()==AppType.USERAPP){
+                mApps.add(appModel);
+            }else if(isSystemApps && appModel.getAppType()==AppType.SYSTEMAPP){
+                mApps.add(appModel);
+            }
         }
 
         Collections.sort(mApps, new FileListSorter(sortType, sortOrder));
@@ -179,6 +188,14 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
      */
     private void onReleaseResources(List<AppModel> layoutelementsList) {
 
+    }
+
+    public void setUserApps(boolean userApps) {
+        isUserApps = userApps;
+    }
+
+    public void setSystemApps(boolean systemApps) {
+        isSystemApps = systemApps;
     }
 
     private CharSequence[] getAppPermissions(PackageManager packageManager, String packageName) {

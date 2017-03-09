@@ -35,11 +35,14 @@
     <string name="beware_unregistering_device_admin">Warning: If this option is deactivated, anyone can uninstall App manager and access all apps.</string>
     <string name="add_admin_extra_app_text">Activate this option to allow Hexlock to ask for a passcode if a user tries to uninstall this app.</string>
 
-
     <!--admob banner adunit ids-->
     <string name="appmanager_firstscreen_banner">ca-app-pub-6103213878258636/2297023300</string>
     <string name="appmanager_app_uninstall_banner">ca-app-pub-6103213878258636/5250489703</string>
     <string name="appmanager_app_backup_banner">ca-app-pub-6103213878258636/6727222909</string>
     <string name="appmanager_app_permissions_banner">ca-app-pub-6103213878258636/8203956109</string>
     <string name="appmanager_app_package_banner">ca-app-pub-6103213878258636/9680689305</string>
+
+    <string name="user_apps">User Apps</string>
+    <string name="system_apps">System Apps</string>
+    <string name="section_format">Page %1$d</string>
 </resources>

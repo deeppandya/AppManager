@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -55,4 +58,12 @@ public class CommonFunctions {
     public static String getBackupDir() {
         return Environment.getExternalStorageDirectory().getPath() + "/AppManager/apk_backup";
     }
+
+    public static Drawable tintMyDrawable(Drawable drawable, int color) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+        return drawable;
+    }
+
 }

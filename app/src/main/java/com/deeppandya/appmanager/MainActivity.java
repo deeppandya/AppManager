@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int ID_LOADER_APP_LIST = 0;
     private RelativeLayout adViewLayout;
 
+    private boolean isUserApps=true;
+    private boolean isSystemApps=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +134,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_sortby:
                 showSortDialog();
                 break;
+            case R.id.action_user_apps:
+
+                isUserApps=true;
+                isSystemApps=false;
+
+                getSupportLoaderManager().restartLoader(MainActivity.ID_LOADER_APP_LIST, null, MainActivity.this);
+                break;
+            case R.id.action_system_apps:
+                isUserApps=false;
+                isSystemApps=true;
+
+                getSupportLoaderManager().restartLoader(MainActivity.ID_LOADER_APP_LIST, null, MainActivity.this);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -138,7 +154,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<AppModel>> onCreateLoader(int id, Bundle args) {
-        return new AppListLoader(MainActivity.this);
+        recyclerView.setVisibility(View.GONE);
+        findViewById(R.id.mainProgress).setVisibility(View.VISIBLE);
+        return new AppListLoader(MainActivity.this,isUserApps,isSystemApps);
     }
 
     @Override
