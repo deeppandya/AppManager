@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.adapter.AppAdapter;
@@ -24,6 +26,9 @@ import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.DividerItemDecoration;
 import com.deeppandya.appmanager.util.PersistanceManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import java.util.List;
 
@@ -33,15 +38,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private AppAdapter mAdapter;
 
     public static final int ID_LOADER_APP_LIST = 0;
+    private RelativeLayout adViewLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setToolbarTitle();
+        setToolbarTitle(getAppcategory());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        adViewLayout = (RelativeLayout) findViewById(R.id.adView);
 
         mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this);
 
@@ -55,18 +62,46 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         recyclerView.setAdapter(mAdapter);
 
+        loadAdMobBannerAd(getAppcategory());
+
         getSupportLoaderManager().initLoader(ID_LOADER_APP_LIST,null,this);
 
     }
 
-    private void setToolbarTitle() {
-        if(getAppcategory()==AppCategory.UNINSTALL){
+    private void loadAdMobBannerAd(AppCategory appCategory) {
+
+        String adUnitId="";
+
+        if(appCategory==AppCategory.UNINSTALL){
+            adUnitId=getResources().getString(R.string.appmanager_app_uninstall_banner);
+        }else if(appCategory==AppCategory.BACKUP){
+            adUnitId=getResources().getString(R.string.appmanager_app_backup_banner);
+        }else if(appCategory==AppCategory.PERMISSIONS){
+            adUnitId=getResources().getString(R.string.appmanager_app_permissions_banner);
+        }else if(appCategory==AppCategory.PACKAGE){
+            adUnitId=getResources().getString(R.string.appmanager_app_package_banner);
+        }
+
+        AdView mAdView = new AdView(this);
+        mAdView.setAdUnitId(adUnitId);
+        mAdView.setAdSize(AdSize.BANNER);
+
+        adViewLayout.addView(mAdView);
+
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice("DD88CB4BC53A57945289D53A627F700A")
+                .build();
+        mAdView.loadAd(adRequest);
+    }
+
+    private void setToolbarTitle(AppCategory appCategory) {
+        if(appCategory==AppCategory.UNINSTALL){
             getSupportActionBar().setTitle(getResources().getString(R.string.uninstall_manager));
-        }else if(getAppcategory()==AppCategory.BACKUP){
+        }else if(appCategory==AppCategory.BACKUP){
             getSupportActionBar().setTitle(getResources().getString(R.string.backup_manager));
-        }else if(getAppcategory()==AppCategory.PERMISSIONS){
+        }else if(appCategory==AppCategory.PERMISSIONS){
             getSupportActionBar().setTitle(getResources().getString(R.string.permission_manager));
-        }else if(getAppcategory()==AppCategory.PACKAGE){
+        }else if(appCategory==AppCategory.PACKAGE){
             getSupportActionBar().setTitle(getResources().getString(R.string.package_manager));
         }
     }

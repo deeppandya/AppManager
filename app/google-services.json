@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "719010158444",
+    "firebase_url": "https://app-manager-7b1bf.firebaseio.com",
+    "project_id": "app-manager-7b1bf",
+    "storage_bucket": "app-manager-7b1bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719010158444:android:1e66c201817720b6",
+        "android_client_info": {
+          "package_name": "com.deeppandya.appmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "719010158444-kqulegfomlceoi666nilf4b4pta279dv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWRzE2t2DWKmEGpqtsyMFt3hZqBc_CElg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
