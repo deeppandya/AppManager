@@ -5,4 +5,19 @@
         android:title="@string/rate_us"
         android:icon="@drawable/ic_favorite_white"
         app:showAsAction="always"/>
+    <item android:id="@+id/action_help"
+        android:title="@string/help"
+        app:showAsAction="never"/>
+    <!--<item android:id="@+id/action_faq"-->
+        <!--android:title="@string/faq"-->
+        <!--app:showAsAction="never"/>-->
+    <item android:id="@+id/action_feedback"
+        android:title="@string/feedback"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_share"
+        android:title="@string/share"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_exit"
+        android:title="@string/exit"
+        app:showAsAction="never"/>
 </menu>

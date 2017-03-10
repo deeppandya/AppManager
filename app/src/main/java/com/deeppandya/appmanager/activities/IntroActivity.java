@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.util.BulletTextUtil;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.google.android.gms.ads.AdListener;
@@ -264,12 +265,17 @@ public class IntroActivity extends AppCompatActivity {
 
             if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
                 textView.setText(getString(R.string.app_uninstall_manager));
+                //CharSequence bulletedList = BulletTextUtil.getBulletList("Features",new String[]{ "List all installed app", "Search app","Remove/delete/uninstall app","Sort by size/name/installed date","Long press on app to uninstall multiple apps at the same time"});
+                sectionTxt.setText("Perform single or batch uninstall operations for unwanted apps that persistently take up phone memory, reducing the device performance.");
             }else if(getArguments().getInt(ARG_SECTION_NUMBER)==2){
                 textView.setText(getString(R.string.app_backup_manager));
+                sectionTxt.setText("App Backup Manager is a handy tool to backup installed application to share with your friends without connecting to the internet.");
             }else if(getArguments().getInt(ARG_SECTION_NUMBER)==3){
                 textView.setText(getString(R.string.app_permissions_manager));
+                sectionTxt.setText("App Permissions Manager is a tool designed to resolve user's concern regarding permissions used by apps.");
             }else if(getArguments().getInt(ARG_SECTION_NUMBER)==4){
                 textView.setText(getString(R.string.app_package_manager));
+                sectionTxt.setText(getString(R.string.package_msg));
             }
 
             img = (ImageView) rootView.findViewById(R.id.section_img);

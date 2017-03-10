@@ -51,6 +51,7 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-ads:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-config:${playServicesLibraryVersion}"
+    compile "com.google.firebase:firebase-invites:${playServicesLibraryVersion}"
 
     //google play services
     compile "com.google.android.gms:play-services-ads:${playServicesLibraryVersion}"

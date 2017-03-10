@@ -1,5 +1,6 @@
 package com.deeppandya.appmanager.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.enums.AppSortType;
+import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
@@ -231,8 +233,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 switch (item.getItemId()) {
                     case R.id.open:
                         CommonFunctions.openApp(context,appModel);
+                        return true;
                     case R.id.share:
-
+                        CommonFunctions.shareApp(((Activity)context),appModel.getAppName(),appModel.getPackageName());
                         return true;
                     case R.id.play:
                         CommonFunctions.openAppInPlayStore(context,appModel);
@@ -246,6 +249,15 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         });
 
         popupMenu.inflate(R.menu.app_options);
+        if(appModel.getAppType()== AppType.USERAPP){
+            popupMenu.getMenu().findItem(R.id.share).setVisible(true);
+            popupMenu.getMenu().findItem(R.id.play).setVisible(true);
+            popupMenu.getMenu().findItem(R.id.open).setVisible(true);
+        }else{
+            popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+            popupMenu.getMenu().findItem(R.id.play).setVisible(false);
+            popupMenu.getMenu().findItem(R.id.open).setVisible(false);
+        }
         popupMenu.show();
     }
 }

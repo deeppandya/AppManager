@@ -43,7 +43,8 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.deeppandya.appmanager" />
 
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.MainActivity"
+            android:theme="@style/AppTheme.OverFlow"/>
 
         <receiver
             android:name=".receiver.PackageReceiver"

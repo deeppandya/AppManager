@@ -1,5 +1,6 @@
 package com.deeppandya.appmanager.util;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
 import com.deeppandya.appmanager.model.AppModel;
+import com.deeppandya.appmanager.receiver.PackageReceiver;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.File;
@@ -27,6 +30,8 @@ import java.text.SimpleDateFormat;
 public class CommonFunctions {
 
     private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
+
+    private static int REQUEST_INVITE=2;
 
     public static String getdate(long f, String year) {
         String date = sSDF.format(f);
@@ -128,4 +133,19 @@ public class CommonFunctions {
         }
     }
 
+    public static void shareApp(Activity activity, String appName, String packageName){
+        Intent intent = new AppInviteInvitation.IntentBuilder(appName)
+                .setMessage(activity.getString(R.string.invitation_message))
+                .setDeepLink(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName))
+                .setCallToActionText(activity.getString(R.string.invitation_cta))
+                .build();
+        activity.startActivityForResult(intent,REQUEST_INVITE);
+    }
+    public static void sendFeedback(Context context) {
+        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/html");
+        intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ context.getString(R.string.mail_feedback_email) });
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.mail_feedback_subject));
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.title_send_feedback)));
+    }
 }

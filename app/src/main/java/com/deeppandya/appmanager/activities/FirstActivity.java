@@ -236,6 +236,21 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
             case R.id.action_rate:
                 CommonFunctions.rateApp(FirstActivity.this);
                 break;
+            case R.id.action_help:
+                openIntro();
+                break;
+//            case R.id.action_faq:
+//
+//                break;
+            case R.id.action_feedback:
+                CommonFunctions.sendFeedback(FirstActivity.this);
+                break;
+            case R.id.action_share:
+                CommonFunctions.shareApp(FirstActivity.this,getResources().getString(R.string.app_name),getPackageName());
+                break;
+            case R.id.action_exit:
+                finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
