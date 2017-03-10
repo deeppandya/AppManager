@@ -1,7 +1,11 @@
 package com.deeppandya.appmanager.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,6 +20,7 @@ import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.managers.AppMemoryManager;
 import com.deeppandya.appmanager.managers.AppStorageManager;
 import com.deeppandya.appmanager.managers.FirebaseManager;
+import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.UninstallPreventionManager;
@@ -76,7 +81,13 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         backupCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openActivity(AppCategory.BACKUP);
+                if (RuntimePermissionManager.checkSelfPermission(FirstActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    RuntimePermissionManager.requestPermission(FirstActivity.this, findViewById(android.R.id.content), Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            RuntimePermissionManager.PERMISSIONS_ACCOUNT, RuntimePermissionManager.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE,
+                            getResources().getString(R.string.storage_permission_permissions_needed));
+                } else {
+                    openActivity(AppCategory.BACKUP);
+                }
             }
         });
 
@@ -101,6 +112,33 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
 
         if (!PersistanceManager.getUserFirstTime(FirstActivity.this) && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.LAUNCH_INTERSTITIAL)) {
             loadAdMobInterstitialAd();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == RuntimePermissionManager.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openActivity(AppCategory.BACKUP);
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    RuntimePermissionManager.createSnackBar(findViewById(android.R.id.content),
+                            getResources().getString(R.string.storage_permission_permissions_needed), Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar snackbar = RuntimePermissionManager.createSnackBar(findViewById(android.R.id.content),
+                            getResources().getString(R.string.storage_permission_go_to_settings), Snackbar.LENGTH_LONG);
+
+                    snackbar.setAction(R.string.action_settings, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CommonFunctions.openAppProperties(FirstActivity.this,getPackageName());
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

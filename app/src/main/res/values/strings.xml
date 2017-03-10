@@ -58,4 +58,8 @@
     <string name="storage_usage">Storage Usage</string>
     <string name="used">Used</string>
     <string name="free">Free</string>
+    <string name="storage_permission_permissions_needed">Storage permissions are needed to backup apps.</string>
+    <string name="action_settings">Settings</string>
+    <string name="storage_permission_go_to_settings">Storage permissions are needed to backup apps. Please go to settings</string>
+    <string name="allow">Allow</string>
 </resources>

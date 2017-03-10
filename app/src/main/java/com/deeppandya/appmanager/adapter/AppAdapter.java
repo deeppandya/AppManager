@@ -238,7 +238,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                         CommonFunctions.openAppInPlayStore(context,appModel);
                         return true;
                     case R.id.app_properties:
-                        CommonFunctions.openAppProperties(context,appModel);
+                        CommonFunctions.openAppProperties(context,appModel.getPackageName());
                         return true;
                 }
                 return false;

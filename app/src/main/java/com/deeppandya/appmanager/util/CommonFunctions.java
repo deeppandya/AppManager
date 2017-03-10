@@ -86,10 +86,10 @@ public class CommonFunctions {
         }
     }
 
-    public static void openAppProperties(Context context,AppModel appModel) {
+    public static void openAppProperties(Context context,String appPackageName) {
         context.startActivity(new Intent(
                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + appModel.getPackageName())));
+                Uri.parse("package:" + appPackageName)));
     }
 
     public static void openAppInPlayStore(Context context,AppModel appModel) {
