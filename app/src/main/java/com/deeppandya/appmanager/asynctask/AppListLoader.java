@@ -12,10 +12,9 @@ import android.text.format.Formatter;
 import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.SortOrder;
-import com.deeppandya.appmanager.enums.SortType;
+import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageReceiver;
-import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.ConfigChange;
 import com.deeppandya.appmanager.util.FileListSorter;
 import com.deeppandya.appmanager.util.PersistanceManager;
@@ -36,18 +35,14 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
     private Context context;
     private List<AppModel> mApps;
     private SortOrder sortOrder;
-    private SortType sortType;
-    private boolean isUserApps;
-    private boolean isSystemApps;
+    private AppSortType appSortType;
 
-    public AppListLoader(Context context,boolean isUserApps,boolean isSystemApps) {
+    public AppListLoader(Context context) {
         super(context);
 
         this.context = context;
-        this.sortType = PersistanceManager.getSortType(context);
+        this.appSortType = PersistanceManager.getSortType(context);
         this.sortOrder = PersistanceManager.getSortOrder(context);
-        this.isUserApps=isUserApps;
-        this.isSystemApps=isSystemApps;
 
         /**
          * using global context because of the fact that loaders are supposed to be used
@@ -92,16 +87,11 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
                 appModel.setAppType(AppType.USERAPP);
             }
 
-            if(!isUserApps && !isSystemApps){
-                mApps.add(appModel);
-            }else if(isUserApps && appModel.getAppType()==AppType.USERAPP){
-                mApps.add(appModel);
-            }else if(isSystemApps && appModel.getAppType()==AppType.SYSTEMAPP){
-                mApps.add(appModel);
-            }
+            mApps.add(appModel);
+
         }
 
-        Collections.sort(mApps, new FileListSorter(sortType, sortOrder));
+        //Collections.sort(mApps, new FileListSorter(appSortType, sortOrder));
 
         return mApps;
     }
@@ -188,14 +178,6 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
      */
     private void onReleaseResources(List<AppModel> layoutelementsList) {
 
-    }
-
-    public void setUserApps(boolean userApps) {
-        isUserApps = userApps;
-    }
-
-    public void setSystemApps(boolean systemApps) {
-        isSystemApps = systemApps;
     }
 
     private CharSequence[] getAppPermissions(PackageManager packageManager, String packageName) {

@@ -6,6 +6,8 @@ import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.FirebaseApp;
+import com.orm.SugarApp;
+import com.orm.SugarContext;
 
 /**
  * Created by d_pandya on 3/9/17.
@@ -18,6 +20,8 @@ public class AppManger extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        SugarContext.init(this);
         FirebaseApp.initializeApp(this);
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-6103213878258636~9820290101");
 

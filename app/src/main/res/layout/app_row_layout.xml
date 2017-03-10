@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:background="@drawable/statelist_item_background"
     android:orientation="horizontal"
     android:minHeight="@dimen/minimal_row_size"
     android:paddingLeft="@dimen/minimal_material_padding"

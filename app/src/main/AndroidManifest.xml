@@ -31,6 +31,11 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorGreen" />
 
+        <meta-data android:name="DATABASE" android:value="appmanager.db" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.deeppandya.appmanager" />
+
         <activity android:name=".MainActivity" />
 
         <receiver

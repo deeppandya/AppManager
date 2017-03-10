@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.deeppandya.appmanager.enums.SortOrder;
-import com.deeppandya.appmanager.enums.SortType;
+import com.deeppandya.appmanager.enums.AppSortType;
 
 /**
  * Created by d_pandya on 3/8/17.
@@ -19,17 +19,17 @@ public class PersistanceManager {
 
     public static final String SORT_ORDER = "sort_order";
 
-    public static void setSortType(Context context, SortType sortType) {
+    public static void setSortType(Context context, AppSortType appSortType) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SORT_TYPE, sortType.toString());
+        editor.putString(SORT_TYPE, appSortType.toString());
         editor.commit();
     }
 
-    public static SortType getSortType(Context context) {
+    public static AppSortType getSortType(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String sortType = sharedPreferences.getString(SORT_TYPE, SortType.BYNAME.toString());
-        return SortType.toSortType(sortType);
+        String sortType = sharedPreferences.getString(SORT_TYPE, AppSortType.BYNAME.toString());
+        return AppSortType.toSortType(sortType);
     }
 
     public static void setSortOrder(Context context, SortOrder sortOrder) {

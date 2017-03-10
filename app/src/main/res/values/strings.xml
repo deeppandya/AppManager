@@ -50,4 +50,6 @@
     <string name="app_permissions_manager">App Permissions Manager</string>
     <string name="app_package_manager">App Package Manager</string>
     <string name="rate_us">Rate us</string>
+    <string name="selected_count">%1$s selected</string>
+    <string name="please_select_atleast">Please select atleast 1 app</string>
 </resources>

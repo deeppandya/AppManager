@@ -26,13 +26,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
 import com.deeppandya.appmanager.enums.AppCategory;
-import com.deeppandya.appmanager.enums.SortType;
+import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.PersistanceManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,17 +45,18 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
     private View view;
     private Context context;
     private AppCategory appCategory;
-    private SortType sortType;
-
-    public AppAdapter(View view,Context context) {
-        this.view=view;
-        this.context=context;
-    }
-
+    private AppSortType appSortType;
+    private List<AppModel> selectedItems;
     private List<AppModel> appList;
 
+    public AppAdapter(View view, Context context) {
+        this.view = view;
+        this.context = context;
+        selectedItems = new ArrayList<>();
+    }
+
     public void setAppCategory(AppCategory appCategory) {
-        this.appCategory=appCategory;
+        this.appCategory = appCategory;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -63,7 +65,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         LinearLayout appLayout;
         TextView txtAppDesc;
         ImageButton appProperties;
-        Button btnUninstall,btnBackup,btnPermission,btnPackage;
+        Button btnUninstall, btnBackup, btnPermission, btnPackage;
 
         public ViewHolder(View view) {
             super(view);
@@ -71,11 +73,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             appIcon = (ImageView) view.findViewById(R.id.app_icon);
             appLayout = (LinearLayout) view.findViewById(R.id.app_layout);
             txtAppDesc = (TextView) view.findViewById(R.id.app_desc);
-            appProperties =(ImageButton)view.findViewById(R.id.app_properties);
+            appProperties = (ImageButton) view.findViewById(R.id.app_properties);
 
-            btnUninstall=(Button)view.findViewById(R.id.btnUninstall);
-            btnBackup=(Button)view.findViewById(R.id.btnBackup);
-            btnPermission=(Button)view.findViewById(R.id.btnPermission);
+            btnUninstall = (Button) view.findViewById(R.id.btnUninstall);
+            btnBackup = (Button) view.findViewById(R.id.btnBackup);
+            btnPermission = (Button) view.findViewById(R.id.btnPermission);
 
         }
     }
@@ -89,14 +91,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final AppModel appModel = appList.get(position);
         holder.appIcon.setImageDrawable(appModel.getAppIcon());
         holder.txtAppName.setText(appModel.getAppName());
 
-        if(sortType==SortType.BYDATE){
+        if (appSortType == AppSortType.BYDATE) {
             holder.txtAppDesc.setText(appModel.getFormattedDate());
-        }else{
+        } else {
             holder.txtAppDesc.setText(appModel.getSize());
         }
 
@@ -105,40 +107,52 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             holder.appProperties.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showPopup(v,appModel);
+                    showPopup(v, appModel);
                 }
             });
         }
 
-        if(appCategory==AppCategory.UNINSTALL){
-            holder.btnUninstall.setVisibility(View.VISIBLE);
-            holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    uninstallApp(appModel);
-                }
-            });
-        }else if(appCategory==AppCategory.BACKUP){
-            holder.btnBackup.setVisibility(View.VISIBLE);
-            holder.btnBackup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    backupApp(appModel);
-                }
-            });
-        }else if(appCategory==AppCategory.PERMISSIONS){
+        if (appCategory == AppCategory.UNINSTALL) {
+            if(selectedItems.contains(appList.get(position))){
+                holder.appLayout.setActivated(true);
+                holder.btnUninstall.setVisibility(View.GONE);
+            }else{
+                holder.appLayout.setActivated(false);
+                holder.btnUninstall.setVisibility(View.VISIBLE);
+                holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CommonFunctions.uninstallApp(context,appModel);
+                    }
+                });
+            }
+        } else if (appCategory == AppCategory.BACKUP) {
+            if(selectedItems.contains(appList.get(position))){
+                holder.appLayout.setActivated(true);
+                holder.btnBackup.setVisibility(View.GONE);
+            }else{
+                holder.appLayout.setActivated(false);
+                holder.btnBackup.setVisibility(View.VISIBLE);
+                holder.btnBackup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CommonFunctions.backupApp(context,view,appModel);
+                    }
+                });
+            }
+        } else if (appCategory == AppCategory.PERMISSIONS) {
             holder.btnPermission.setVisibility(View.VISIBLE);
-            if(appModel.getPermissions()!=null && appModel.getPermissions().length>0){
+            if (appModel.getPermissions() != null && appModel.getPermissions().length > 0) {
                 holder.btnPermission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showPermissions(appModel);
                     }
                 });
-            }else{
+            } else {
                 holder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
             }
-        }else if(appCategory==AppCategory.PACKAGE){
+        } else if (appCategory == AppCategory.PACKAGE) {
             holder.txtAppDesc.setText(appModel.getPackageName());
         }
 
@@ -153,7 +167,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
     private void showPermissions(final AppModel appModel) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(appModel.getAppName()+" "+context.getResources().getString(R.string.permission));
+        builder.setTitle(appModel.getAppName() + " " + context.getResources().getString(R.string.permission));
         builder.setItems(appModel.getPermissions(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 try {
@@ -166,14 +180,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         });
         AlertDialog alert = builder.create();
 
-        ListView listView=alert.getListView();
+        ListView listView = alert.getListView();
         listView.setDivider(new ColorDrawable(context.getResources().getColor(R.color.colorAccent))); // set color
         listView.setDividerHeight(2); // set height
 
         alert.show();
     }
 
-    private void showPermissionDesc(String permission,String permissionDesc) {
+    private void showPermissionDesc(String permission, String permissionDesc) {
         new MaterialDialog.Builder(context)
                 .title(permission)
                 .content(permissionDesc)
@@ -184,30 +198,53 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return appList!=null? appList.size():0;
+        return appList != null ? appList.size() : 0;
+    }
+
+    public void toggleSelection(int pos) {
+        if (selectedItems.contains(appList.get(pos))) {
+            selectedItems.remove(appList.get(pos));
+        } else {
+            selectedItems.add(appList.get(pos));
+        }
+
+        notifyItemChanged(pos);
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<AppModel> getSelectedItems() {
+        return selectedItems;
     }
 
     public void setAppList(List<AppModel> appList) {
-        this.sortType= PersistanceManager.getSortType(context);
+        this.appSortType = PersistanceManager.getSortType(context);
         this.appList = appList;
     }
 
-    void showPopup(View view, final AppModel appModel){
+    void showPopup(View view, final AppModel appModel) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-                        openApp(appModel);
+                        CommonFunctions.openApp(context,appModel);
                     case R.id.share:
 
                         return true;
                     case R.id.play:
-                        openAppInPlayStore(appModel);
+                        CommonFunctions.openAppInPlayStore(context,appModel);
                         return true;
                     case R.id.app_properties:
-                        openAppProperties(appModel);
+                        CommonFunctions.openAppProperties(context,appModel);
                         return true;
                 }
                 return false;
@@ -217,47 +254,4 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         popupMenu.inflate(R.menu.app_options);
         popupMenu.show();
     }
-
-    private void backupApp(AppModel appModel) {
-        File inputFile = new File(appModel.getAppDesc());
-        File destDir = new File(CommonFunctions.getBackupDir());
-        if(!destDir.exists() || !destDir.isDirectory())destDir.mkdirs();
-
-        File outFile=new File(destDir+File.separator+ appModel.getAppName() + "_" + appModel.getSymlink() + ".apk");
-
-        try {
-            outFile.createNewFile();
-            CopyFileAsynctask copyFilesAsynctask=new CopyFileAsynctask(view,context,inputFile,outFile,appModel.getAppName());
-            copyFilesAsynctask.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void openAppProperties(AppModel appModel) {
-        context.startActivity(new Intent(
-                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + appModel.getPackageName())));
-    }
-
-    private void openAppInPlayStore(AppModel appModel) {
-        Intent intent1 = new Intent(Intent.ACTION_VIEW);
-        intent1.setData(Uri.parse("market://details?id=" + appModel.getPackageName()));
-        context.startActivity(intent1);
-    }
-
-    private void uninstallApp(AppModel appModel) {
-        Intent intent = new Intent(Intent.ACTION_DELETE);
-        intent.setData(Uri.parse("package:"+appModel.getPackageName()));
-        context.startActivity(intent);
-    }
-
-    private void openApp(AppModel appModel) {
-        Intent i1 = context.getPackageManager().getLaunchIntentForPackage(appModel.getPackageName());
-        if (i1!= null)
-            context.startActivity(i1);
-        else
-            Toast.makeText(context,context.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
-    }
-
 }

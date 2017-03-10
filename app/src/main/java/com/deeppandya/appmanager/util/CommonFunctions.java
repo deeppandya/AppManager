@@ -3,22 +3,21 @@ package com.deeppandya.appmanager.util;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.deeppandya.appmanager.MainActivity;
 import com.deeppandya.appmanager.R;
-import com.deeppandya.appmanager.enums.SortType;
+import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
+import com.deeppandya.appmanager.model.AppModel;
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -84,6 +83,48 @@ public class CommonFunctions {
             FirebaseCrash.log(e.getMessage());
             context.startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+        }
+    }
+
+    public static void openAppProperties(Context context,AppModel appModel) {
+        context.startActivity(new Intent(
+                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + appModel.getPackageName())));
+    }
+
+    public static void openAppInPlayStore(Context context,AppModel appModel) {
+        Intent intent1 = new Intent(Intent.ACTION_VIEW);
+        intent1.setData(Uri.parse("market://details?id=" + appModel.getPackageName()));
+        context.startActivity(intent1);
+    }
+
+    public static void uninstallApp(Context context,AppModel appModel) {
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        intent.setData(Uri.parse("package:" + appModel.getPackageName()));
+        context.startActivity(intent);
+    }
+
+    public static void openApp(Context context,AppModel appModel) {
+        Intent i1 = context.getPackageManager().getLaunchIntentForPackage(appModel.getPackageName());
+        if (i1 != null)
+            context.startActivity(i1);
+        else
+            Toast.makeText(context, context.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
+    }
+
+    public static void backupApp(Context context,View view, AppModel appModel) {
+        File inputFile = new File(appModel.getAppDesc());
+        File destDir = new File(CommonFunctions.getBackupDir());
+        if (!destDir.exists() || !destDir.isDirectory()) destDir.mkdirs();
+
+        File outFile = new File(destDir + File.separator + appModel.getAppName() + "_" + appModel.getSymlink() + ".apk");
+
+        try {
+            outFile.createNewFile();
+            CopyFileAsynctask copyFilesAsynctask = new CopyFileAsynctask(view, context, inputFile, outFile, appModel.getAppName());
+            copyFilesAsynctask.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

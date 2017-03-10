@@ -4,12 +4,12 @@ package com.deeppandya.appmanager.enums;
  * Created by d_pandya on 3/8/17.
  */
 
-public enum SortType {
+public enum AppSortType {
     BYNAME(0),BYDATE(1),BYSIZE(2);
 
     private int value;
 
-    SortType(int i) {
+    AppSortType(int i) {
         value=i;
     }
 
@@ -17,7 +17,7 @@ public enum SortType {
         return value;
     }
 
-    public static SortType toSortType (String sortTypeString) {
+    public static AppSortType toSortType (String sortTypeString) {
         try {
             return valueOf(sortTypeString);
         } catch (Exception ex) {
@@ -26,7 +26,7 @@ public enum SortType {
         }
     }
 
-    public static SortType getSortTypeByInt(int which) {
+    public static AppSortType getSortTypeByInt(int which) {
         if(which==0){
             return BYNAME;
         }else if(which==1){
