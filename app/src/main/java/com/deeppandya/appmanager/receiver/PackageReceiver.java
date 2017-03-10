@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.deeppandya.appmanager.MainActivity;
 import com.deeppandya.appmanager.asynctask.AppListLoader;
 
 /**

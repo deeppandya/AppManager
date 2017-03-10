@@ -1,4 +1,4 @@
-package com.deeppandya.appmanager.util;
+package com.deeppandya.appmanager.managers;
 
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;

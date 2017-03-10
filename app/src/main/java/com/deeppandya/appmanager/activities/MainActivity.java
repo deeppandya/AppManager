@@ -1,4 +1,4 @@
-package com.deeppandya.appmanager;
+package com.deeppandya.appmanager.activities;
 
 import android.app.SearchManager;
 import android.os.Bundle;
@@ -22,17 +22,19 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.AppListLoader;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.enums.SortOrder;
 import com.deeppandya.appmanager.enums.AppSortType;
+import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.DividerItemDecoration;
 import com.deeppandya.appmanager.util.FileListSorter;
-import com.deeppandya.appmanager.util.PersistanceManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<AppModel>>, SearchView.OnQueryTextListener,RecyclerView.OnItemTouchListener,
+public class MainActivity extends BannerActivity implements LoaderManager.LoaderCallbacks<List<AppModel>>, SearchView.OnQueryTextListener,RecyclerView.OnItemTouchListener,
         View.OnClickListener,
         ActionMode.Callback {
 
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ActionMode actionMode;
 
     public static final int ID_LOADER_APP_LIST = 0;
-    private RelativeLayout adViewLayout;
 
     private boolean isUserApps=true;
     private boolean isSystemApps=false;
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setToolbarTitle(getAppcategory());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        adViewLayout = (RelativeLayout) findViewById(R.id.adView);
 
         mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this);
 
@@ -102,26 +102,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String adUnitId="";
 
-        if(appCategory==AppCategory.UNINSTALL){
+        if(appCategory==AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_uninstall_banner);
-        }else if(appCategory==AppCategory.BACKUP){
+            showBanner(adUnitId);
+        }else if(appCategory==AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_backup_banner);
-        }else if(appCategory==AppCategory.PERMISSIONS){
+            showBanner(adUnitId);
+        }else if(appCategory==AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_permissions_banner);
-        }else if(appCategory==AppCategory.PACKAGE){
+            showBanner(adUnitId);
+        }else if(appCategory==AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_package_banner);
+            showBanner(adUnitId);
         }
-
-        AdView mAdView = new AdView(this);
-        mAdView.setAdUnitId(adUnitId);
-        mAdView.setAdSize(AdSize.BANNER);
-
-        adViewLayout.addView(mAdView);
-
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("DD88CB4BC53A57945289D53A627F700A")
-                .build();
-        mAdView.loadAd(adRequest);
     }
 
     private void setToolbarTitle(AppCategory appCategory) {

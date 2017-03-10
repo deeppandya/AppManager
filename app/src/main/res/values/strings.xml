@@ -52,4 +52,10 @@
     <string name="rate_us">Rate us</string>
     <string name="selected_count">%1$s selected</string>
     <string name="please_select_atleast">Please select atleast 1 app</string>
+    <string name="app_memory_manager">App Memory Manager</string>
+    <string name="memory_msg">Check memory usage and freeing up memory and boosting the device\'s speed.</string>
+    <string name="memory_usage">Memory Usage</string>
+    <string name="storage_usage">Storage Usage</string>
+    <string name="used">Used</string>
+    <string name="free">Free</string>
 </resources>

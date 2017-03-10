@@ -16,12 +16,10 @@ import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.deeppandya.appmanager.util.ConfigChange;
-import com.deeppandya.appmanager.util.FileListSorter;
-import com.deeppandya.appmanager.util.PersistanceManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

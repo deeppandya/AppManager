@@ -30,13 +30,20 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorGreen" />
+        <meta-data
+            android:name="DATABASE"
+            android:value="appmanager.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.deeppandya.appmanager" />
 
-        <meta-data android:name="DATABASE" android:value="appmanager.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.deeppandya.appmanager" />
-
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activities.MainActivity" />
 
         <receiver
             android:name=".receiver.PackageReceiver"
@@ -55,7 +62,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".FirstActivity">
+        <activity android:name=".activities.FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,9 +76,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".PagerActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
+        <activity
+            android:name=".activities.IntroActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".activities.BannerActivity"></activity>
     </application>
 
 </manifest>

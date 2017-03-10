@@ -2,11 +2,9 @@ package com.deeppandya.appmanager.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,19 +18,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
-import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
-import com.deeppandya.appmanager.util.PersistanceManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

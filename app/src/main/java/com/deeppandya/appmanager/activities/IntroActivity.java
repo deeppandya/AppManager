@@ -1,4 +1,4 @@
-package com.deeppandya.appmanager;
+package com.deeppandya.appmanager.activities;
 
 import android.animation.ArgbEvaluator;
 import android.graphics.Color;
@@ -19,13 +19,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.util.CommonFunctions;
-import com.deeppandya.appmanager.util.PersistanceManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-public class PagerActivity extends AppCompatActivity {
+public class IntroActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -52,7 +53,7 @@ public class PagerActivity extends AppCompatActivity {
     CoordinatorLayout mCoordinator;
 
 
-    static final String TAG = "PagerActivity";
+    static final String TAG = "IntroActivity";
 
     int page = 0;   //  to track page position
     private InterstitialAd mInterstitialAd;
@@ -181,7 +182,7 @@ public class PagerActivity extends AppCompatActivity {
 
                 finish();
                 //  update 1st time pref
-                PersistanceManager.setUserFirstTime(PagerActivity.this, false);
+                PersistanceManager.setUserFirstTime(IntroActivity.this, false);
 
             }
         });
