@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.deeppandya.appmanager.enums.AppCategory;
+import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.PersistanceManager;
 import com.deeppandya.appmanager.util.UninstallPreventionManager;
 import com.google.android.gms.ads.AdListener;
@@ -77,6 +81,28 @@ public class FirstActivity extends AppCompatActivity implements UninstallPrevent
 
         //loadDFPBannerAd();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.first_screen_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_rate:
+                CommonFunctions.rateApp(FirstActivity.this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void openIntro() {
