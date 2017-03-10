@@ -45,4 +45,8 @@
     <string name="user_apps">User Apps</string>
     <string name="system_apps">System Apps</string>
     <string name="section_format">Page %1$d</string>
+    <string name="app_uninstall_manager">App Uninstall Manager</string>
+    <string name="app_backup_manager">App Backup Manager</string>
+    <string name="app_permissions_manager">App Permissions Manager</string>
+    <string name="app_package_manager">App Package Manager</string>
 </resources>

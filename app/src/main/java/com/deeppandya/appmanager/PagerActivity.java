@@ -169,7 +169,6 @@ public class PagerActivity extends AppCompatActivity {
         mSkipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 finish();
             }
         });
@@ -260,7 +259,17 @@ public class PagerActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_pager, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            TextView sectionTxt=(TextView)rootView.findViewById(R.id.section_text);
+
+            if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
+                textView.setText(getString(R.string.app_uninstall_manager));
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER)==2){
+                textView.setText(getString(R.string.app_backup_manager));
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER)==3){
+                textView.setText(getString(R.string.app_permissions_manager));
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER)==4){
+                textView.setText(getString(R.string.app_package_manager));
+            }
 
             img = (ImageView) rootView.findViewById(R.id.section_img);
             img.setBackgroundResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);

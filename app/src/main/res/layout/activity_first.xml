@@ -56,7 +56,7 @@
                             android:ellipsize="marquee"
                             android:maxLines="1"
                             android:padding="8dp"
-                            android:text="@string/uninstall"
+                            android:text="@string/app_uninstall_manager"
                             android:textSize="20sp" />
 
                         <TextView
@@ -64,7 +64,9 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
                             android:maxLines="1"
-                            android:padding="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingBottom="8dp"
                             android:text="@string/uninstall_msg"
                             android:textSize="16sp" />
 
@@ -107,17 +109,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:padding="8dp"
-                            android:text="@string/backup"
+                            android:text="@string/app_backup_manager"
                             android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
-                            android:padding="8dp"
+                            android:maxLines="2"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingBottom="8dp"
                             android:text="@string/backup_msg"
                             android:textSize="16sp" />
 
@@ -160,17 +164,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:padding="8dp"
-                            android:text="@string/app_permissions"
+                            android:text="@string/app_permissions_manager"
                             android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
-                            android:padding="8dp"
+                            android:maxLines="2"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingBottom="8dp"
                             android:text="@string/permission_msg"
                             android:textSize="16sp" />
 
@@ -213,17 +219,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:padding="8dp"
-                            android:text="@string/app_package_name"
+                            android:text="@string/app_package_manager"
                             android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
-                            android:padding="8dp"
+                            android:maxLines="2"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingBottom="8dp"
                             android:text="@string/package_msg"
                             android:textSize="16sp" />
 
