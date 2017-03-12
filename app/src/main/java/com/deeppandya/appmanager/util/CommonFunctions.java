@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.Html;
 import android.view.View;
 import android.widget.Toast;
 
@@ -143,12 +144,18 @@ public class CommonFunctions {
     }
 
     public static void shareApp(Activity activity, String appName, String packageName){
-        Intent intent = new AppInviteInvitation.IntentBuilder(appName)
-                .setMessage(activity.getString(R.string.invitation_message))
-                .setDeepLink(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName))
-                .setCallToActionText(activity.getString(R.string.invitation_cta))
-                .build();
-        activity.startActivityForResult(intent,REQUEST_INVITE);
+//        Intent intent = new AppInviteInvitation.IntentBuilder(appName)
+//                .setMessage(activity.getString(R.string.invitation_message))
+//                .setDeepLink(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName))
+//                .setCallToActionText(activity.getString(R.string.invitation_cta))
+//                .build();
+//        activity.startActivityForResult(intent,REQUEST_INVITE);
+
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/html");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT,appName);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+packageName+"&hl=en");
+        activity.startActivity(Intent.createChooser(sharingIntent,"Share app using"));
     }
     public static void sendFeedback(Context context) {
         final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
