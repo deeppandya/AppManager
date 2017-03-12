@@ -22,7 +22,7 @@
     <string name="app_permissions">App Permissions</string>
     <string name="permission_msg">Check permissions for installed apps.</string>
     <string name="app_package_name">App Package Name</string>
-    <string name="package_msg">See installed app\'s package name for devs</string>
+    <string name="package_msg">See installed app\'s package name for devs.</string>
     <string name="permission">Permissions</string>
     <string name="copying_apk">Copying apk to %s</string>
     <string name="uninstall_manager">Uninstall manager</string>
