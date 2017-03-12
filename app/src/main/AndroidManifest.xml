@@ -44,7 +44,8 @@
             android:value="com.deeppandya.appmanager" />
 
         <activity android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.OverFlow"/>
+            android:theme="@style/AppTheme.OverFlow"
+            android:screenOrientation="portrait"/>
 
         <receiver
             android:name=".receiver.PackageReceiver"
@@ -63,7 +64,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.FirstActivity">
+        <activity android:name=".activities.FirstActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,8 +81,10 @@
 
         <activity
             android:name=".activities.IntroActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".activities.BannerActivity"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activities.BannerActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

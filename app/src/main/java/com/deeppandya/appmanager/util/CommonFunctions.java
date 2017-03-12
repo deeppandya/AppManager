@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.google.firebase.crash.FirebaseCrash;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by d_pandya on 3/7/17.
@@ -59,8 +61,12 @@ public class CommonFunctions {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = ("KMGTPE").charAt(exp - 1) + ("");
-        return String.format("%.1f%s", bytes / Math.pow(unit, exp), pre);
+
+        String[] formats={"KB","MB","GB","TB","PB","EB"};
+
+        //String pre = ("KMGTPE").charAt(exp - 1) + ("");
+        String pre=formats[exp-1];
+        return String.format("%.2f %s", bytes / Math.pow(unit, exp), pre);
     }
 
     public static String getBackupDir() {
@@ -117,19 +123,22 @@ public class CommonFunctions {
             Toast.makeText(context, context.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
     }
 
-    public static void backupApp(Context context,View view, AppModel appModel) {
-        File inputFile = new File(appModel.getAppDesc());
-        File destDir = new File(CommonFunctions.getBackupDir());
-        if (!destDir.exists() || !destDir.isDirectory()) destDir.mkdirs();
+    public static void backupApp(Context context,View view, List<AppModel> apps) {
 
-        File outFile = new File(destDir + File.separator + appModel.getAppName() + "_" + appModel.getSymlink() + ".apk");
+        for(AppModel appModel:apps){
+            File inputFile = new File(appModel.getAppDesc());
+            File destDir = new File(CommonFunctions.getBackupDir());
+            if (!destDir.exists() || !destDir.isDirectory()) destDir.mkdirs();
 
-        try {
-            outFile.createNewFile();
-            CopyFileAsynctask copyFilesAsynctask = new CopyFileAsynctask(view, context, inputFile, outFile, appModel.getAppName());
-            copyFilesAsynctask.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+            File outFile = new File(destDir + File.separator + appModel.getAppName() + "_" + appModel.getSymlink() + ".apk");
+
+            try {
+                outFile.createNewFile();
+                CopyFileAsynctask copyFilesAsynctask = new CopyFileAsynctask(view, context, inputFile, outFile, appModel.getAppName());
+                copyFilesAsynctask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

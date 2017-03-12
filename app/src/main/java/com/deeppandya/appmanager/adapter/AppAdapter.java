@@ -132,7 +132,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnBackup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CommonFunctions.backupApp(context,view,appModel);
+
+                        List<AppModel> appModelList=new ArrayList<AppModel>();
+                        appModelList.add(appModel);
+
+                        CommonFunctions.backupApp(context,view,appModelList);
                     }
                 });
             }

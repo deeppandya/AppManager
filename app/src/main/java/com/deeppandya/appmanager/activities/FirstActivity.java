@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
@@ -153,6 +154,12 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         entries.add(new PieEntry((memoryState.getUsedSize() * 100) / memoryState.getTotalSize(), getResources().getString(R.string.used), null));
         entries.add(new PieEntry((memoryState.getFreeSize() * 100) / memoryState.getTotalSize(), getResources().getString(R.string.free), null));
 
+//        TextView txtUsedMemoryDetail=(TextView)findViewById(R.id.txtUsedMemoryDetail);
+//        txtUsedMemoryDetail.setText(CommonFunctions.humanReadableByteCount(memoryState.getUsedSize()));
+//
+//        TextView txtFreeMemoryDetail=(TextView)findViewById(R.id.txtFreeMemoryDetail);
+//        txtFreeMemoryDetail.setText(CommonFunctions.humanReadableByteCount(memoryState.getFreeSize()));
+
         setMemoryData(entries, memoryChart);
     }
 
@@ -167,12 +174,21 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         entries.add(new PieEntry((storageState.getUsedSize() * 100) / storageState.getTotalSize(), getResources().getString(R.string.used), null));
         entries.add(new PieEntry((storageState.getFreeSize() * 100) / storageState.getTotalSize(), getResources().getString(R.string.free), null));
 
+//        entries.add(new PieEntry(storageState.getUsedSize(),getResources().getString(R.string.used),null));
+//        entries.add(new PieEntry(storageState.getFreeSize(),getResources().getString(R.string.free),null));
+
+//        TextView txtUsedStorageDetail=(TextView)findViewById(R.id.txtUsedStorageDetail);
+//        txtUsedStorageDetail.setText(CommonFunctions.humanReadableByteCount(storageState.getUsedSize()));
+//
+//        TextView txtFreeStorageDetail=(TextView)findViewById(R.id.txtFreeStorageDetail);
+//        txtFreeStorageDetail.setText(CommonFunctions.humanReadableByteCount(storageState.getFreeSize()));
+
         setMemoryData(entries, storageChart);
 
     }
 
     private void setPieChart(PieChart pieChart) {
-        pieChart.setUsePercentValues(true);
+        //pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawEntryLabels(false);
 

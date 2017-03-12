@@ -1,6 +1,7 @@
 package com.deeppandya.appmanager.activities;
 
 import android.app.SearchManager;
+import android.media.ImageReader;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
@@ -8,6 +9,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
@@ -73,6 +77,8 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
         setToolbarTitle(getAppcategory());
 
+        setHintLayout();
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this);
@@ -95,6 +101,27 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
         loadAdMobBannerAd(getAppcategory());
 
         getSupportLoaderManager().initLoader(ID_LOADER_APP_LIST,null,this);
+
+    }
+
+    private void setHintLayout() {
+        TextView txtHint=(TextView)findViewById(R.id.txtHint);
+        final CardView hintLayout=(CardView)findViewById(R.id.hint_layout);
+        if(getAppcategory()==AppCategory.UNINSTALL){
+            txtHint.setText(getResources().getString(R.string.long_press_hint));
+        }else if(getAppcategory()==AppCategory.BACKUP){
+            txtHint.setText(String.format(getResources().getString(R.string.backup_can_be_found),CommonFunctions.getBackupDir()));
+        }else{
+            hintLayout.setVisibility(View.GONE);
+        }
+
+        ImageView btnClose=(ImageView)findViewById(R.id.btnHintCancel);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hintLayout.setVisibility(View.GONE);
+            }
+        });
 
     }
 
@@ -347,9 +374,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
             case R.id.action_backup:
                 List<AppModel> selectedItemPositionsforBackup = mAdapter.getSelectedItems();
                 if(selectedItemPositionsforBackup.size()>0){
-                    for (AppModel appModel:selectedItemPositionsforBackup) {
-                        CommonFunctions.backupApp(MainActivity.this,findViewById(android.R.id.content),appModel);
-                    }
+                    CommonFunctions.backupApp(MainActivity.this, findViewById(android.R.id.content), selectedItemPositionsforBackup);
                 }else{
                     Snackbar snackbar = Snackbar
                             .make(findViewById(android.R.id.content),getResources().getString(R.string.please_select_atleast), Snackbar.LENGTH_LONG);
