@@ -80,9 +80,11 @@ public class IntroActivity extends AppCompatActivity {
 
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
-            mNextBtn.setImageDrawable(
-                    CommonFunctions.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE)
-            );
+//            mNextBtn.setImageDrawable(
+//                    CommonFunctions.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE)
+//            );
+
+        mNextBtn.setImageResource(R.drawable.ic_chevron_right_24dp);
 
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
         mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
@@ -279,7 +281,7 @@ public class IntroActivity extends AppCompatActivity {
             }
 
             img = (ImageView) rootView.findViewById(R.id.section_img);
-            img.setBackgroundResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+            img.setImageResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
 
 
             return rootView;
