@@ -48,8 +48,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
-    InterstitialAd mInterstitialAd;
-
     private PieChart memoryChart, storageChart;
 
     @Override
@@ -275,37 +273,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         Intent introIntent = new Intent(FirstActivity.this, IntroActivity.class);
         startActivity(introIntent);
     }
-
-    private void loadAdMobInterstitialAd() {
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6103213878258636/6308420501");
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                //requestNewInterstitial();
-            }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                }
-            }
-        });
-
-        requestNewInterstitial();
-    }
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("DD88CB4BC53A57945289D53A627F700A")
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
-    }
-
 
     private void sendAnalyticsEvent() {
 //        Bundle bundle = new Bundle();
