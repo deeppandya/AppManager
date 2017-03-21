@@ -7,6 +7,7 @@ android {
             keyPassword 'Parth9638'
             storeFile file('../keystore/keypair.jks')
             storePassword 'Parth9638'
+            v2SigningEnabled false
         }
     }
     compileSdkVersion 25
@@ -15,8 +16,8 @@ android {
         applicationId "com.deeppandya.appmanager"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true

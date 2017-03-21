@@ -149,8 +149,8 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
 
         AppMemoryManager.MemoryState memoryState = AppMemoryManager.getMemoryState(FirstActivity.this);
 
-        entries.add(new PieEntry((memoryState.getUsedSize() * 100) / memoryState.getTotalSize(), getResources().getString(R.string.used), null));
-        entries.add(new PieEntry((memoryState.getFreeSize() * 100) / memoryState.getTotalSize(), getResources().getString(R.string.free), null));
+        entries.add(new PieEntry(((float)(memoryState.getUsedSize() * 100) / memoryState.getTotalSize()), getResources().getString(R.string.used), null));
+        entries.add(new PieEntry(((float)(memoryState.getFreeSize() * 100) / memoryState.getTotalSize()), getResources().getString(R.string.free), null));
 
 //        TextView txtUsedMemoryDetail=(TextView)findViewById(R.id.txtUsedMemoryDetail);
 //        txtUsedMemoryDetail.setText(CommonFunctions.humanReadableByteCount(memoryState.getUsedSize()));
@@ -169,8 +169,8 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
 
         AppStorageManager.StorageState storageState = AppStorageManager.getStorageState();
 
-        entries.add(new PieEntry((storageState.getUsedSize() * 100) / storageState.getTotalSize(), getResources().getString(R.string.used), null));
-        entries.add(new PieEntry((storageState.getFreeSize() * 100) / storageState.getTotalSize(), getResources().getString(R.string.free), null));
+        entries.add(new PieEntry(((float)(storageState.getUsedSize() * 100) / storageState.getTotalSize()), getResources().getString(R.string.used), null));
+        entries.add(new PieEntry(((float)(storageState.getFreeSize() * 100) / storageState.getTotalSize()), getResources().getString(R.string.free), null));
 
 //        entries.add(new PieEntry(storageState.getUsedSize(),getResources().getString(R.string.used),null));
 //        entries.add(new PieEntry(storageState.getFreeSize(),getResources().getString(R.string.free),null));
