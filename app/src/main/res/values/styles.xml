@@ -13,7 +13,7 @@
     </style>
 
     <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_filter_list_white</item>
+        <item name="android:icon">@drawable/ic_filter_list_white</item>
     </style>
 
 
