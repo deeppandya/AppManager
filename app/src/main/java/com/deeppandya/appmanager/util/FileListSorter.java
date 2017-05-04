@@ -5,7 +5,7 @@ import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.model.AppModel;
 import java.util.Comparator;
 
-public class FileListSorter implements Comparator<AppModel> {
+public class FileListSorter implements Comparator<Object> {
 
     private SortOrder sortOrder;
     private AppSortType appSortType;
@@ -24,20 +24,20 @@ public class FileListSorter implements Comparator<AppModel> {
      * @return
      */
     @Override
-    public int compare(AppModel file1, AppModel file2) {
+    public int compare(Object file1, Object file2) {
 
         if (appSortType == AppSortType.BYNAME) {
 
             // sort by name
-            return sortOrder.getSortOrderValue() * file1.getAppName().compareToIgnoreCase(file2.getAppName());
+            return sortOrder.getSortOrderValue() * ((AppModel)file1).getAppName().compareToIgnoreCase(((AppModel)file2).getAppName());
         } else if (appSortType == AppSortType.BYDATE) {
 
             // sort by last modified
-            return sortOrder.getSortOrderValue() * Long.valueOf(file1.getDate()).compareTo(Long.valueOf(file2.getDate()));
+            return sortOrder.getSortOrderValue() * Long.valueOf(((AppModel)file1).getDate()).compareTo(Long.valueOf(((AppModel)file2).getDate()));
         } else if (appSortType == AppSortType.BYSIZE) {
 
             // sort by size
-            return sortOrder.getSortOrderValue() * Long.valueOf(file1.getLongSize()).compareTo(Long.valueOf(file2.getLongSize()));
+            return sortOrder.getSortOrderValue() * Long.valueOf(((AppModel)file1).getLongSize()).compareTo(Long.valueOf(((AppModel)file2).getLongSize()));
 
         }
         return 0;

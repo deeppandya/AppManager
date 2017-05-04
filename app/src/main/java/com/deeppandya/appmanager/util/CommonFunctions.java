@@ -124,9 +124,12 @@ public class CommonFunctions {
             Toast.makeText(context, context.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
     }
 
-    public static void backupApp(Context context,View view, List<AppModel> apps) {
+    public static void backupApp(Context context,View view, List<Object> apps) {
 
-        for(AppModel appModel:apps){
+        for(Object app:apps){
+
+            AppModel appModel=(AppModel)app;
+
             File inputFile = new File(appModel.getAppDesc());
             File destDir = new File(CommonFunctions.getBackupDir());
             if (!destDir.exists() || !destDir.isDirectory()) destDir.mkdirs();

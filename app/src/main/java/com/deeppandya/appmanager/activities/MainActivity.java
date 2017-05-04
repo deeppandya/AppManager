@@ -46,6 +46,7 @@ import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -217,7 +218,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
         if(apps!=null && apps.size()>0){
 
-            List<AppModel> tempApps=new ArrayList<>();
+            List<Object> tempApps=new ArrayList<>();
 
             for(AppModel appModel:apps){
 
@@ -234,12 +235,39 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
             Collections.sort(tempApps, new FileListSorter(PersistanceManager.getSortType(MainActivity.this), PersistanceManager.getSortOrder(MainActivity.this)));
 
-            if(mAdapter!=null){
-                mAdapter.setAppList(tempApps);
-                mAdapter.notifyDataSetChanged();
-            }
+            addNativeExpressAds(tempApps);
 
         }
+    }
+
+    private void addNativeExpressAds(final List<Object> tempApps) {
+        for (int i = 0; i <= tempApps.size(); i += 6) {
+            final NativeExpressAdView adView = new NativeExpressAdView(MainActivity.this);
+            adView.setAdUnitId(getResources().getString(R.string.appmanager_native_ad_unit));
+            tempApps.add(i, adView);
+        }
+
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+
+                final float density =MainActivity.this.getResources().getDisplayMetrics().density;
+                AdSize adSize=new AdSize((int)(recyclerView.getWidth()/density),150);
+
+                for(int i=0;i<tempApps.size();i+=6){
+                    NativeExpressAdView adViewSize=(NativeExpressAdView)tempApps.get(i);
+                    adViewSize.setAdSize(adSize);
+                    AdRequest.Builder adBuilder=new AdRequest.Builder();
+                    adBuilder.addTestDevice("AFEFD8AB892B396D44841426D5B36085");
+                    adViewSize.loadAd(adBuilder.build());
+                }
+
+                if(mAdapter!=null){
+                    mAdapter.setAppList(tempApps);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
 
@@ -368,10 +396,10 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_uninstall:
-                List<AppModel> selectedItemPositionsForUninstall = mAdapter.getSelectedItems();
+                List<Object> selectedItemPositionsForUninstall = mAdapter.getSelectedItems();
                 if(selectedItemPositionsForUninstall.size()>0){
                     for (int i = selectedItemPositionsForUninstall.size() - 1; i >= 0; i--) {
-                        CommonFunctions.uninstallApp(MainActivity.this,selectedItemPositionsForUninstall.get(i));
+                        CommonFunctions.uninstallApp(MainActivity.this,(AppModel) selectedItemPositionsForUninstall.get(i));
                     }
                 }else{
                     Snackbar snackbar = Snackbar
@@ -381,7 +409,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
                 actionMode.finish();
                 return true;
             case R.id.action_backup:
-                List<AppModel> selectedItemPositionsforBackup = mAdapter.getSelectedItems();
+                List<Object> selectedItemPositionsforBackup = mAdapter.getSelectedItems();
                 if(selectedItemPositionsforBackup.size()>0){
                     CommonFunctions.backupApp(MainActivity.this, findViewById(android.R.id.content), selectedItemPositionsforBackup);
                 }else{
@@ -406,7 +434,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     public void onClick(View view) {
         if (view.getId() == R.id.app_layout) {
             // item click
-            int idx = recyclerView.getChildPosition(view);
+            int idx = recyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
                 myToggleSelection(idx);
                 return;
@@ -429,7 +457,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
             }
             // Start the CAB using the ActionMode.Callback defined above
             actionMode = startActionMode(MainActivity.this);
-            int idx = recyclerView.getChildPosition(view);
+            int idx = recyclerView.getChildAdapterPosition(view);
             myToggleSelection(idx);
             super.onLongPress(e);
         }

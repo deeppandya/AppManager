@@ -28,22 +28,27 @@ import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
+import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by d_pandya on 3/7/17.
  */
 
-public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
+public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View view;
     private Context context;
     private AppCategory appCategory;
     private AppSortType appSortType;
-    private List<AppModel> selectedItems;
-    private List<AppModel> appList;
+    private List<Object> selectedItems;
+    private List<Object> appList;
+
+    private static final int APP_VIEW_TYPE = 0;
+    private static final int AD_VIEW_TYPE = 1;
 
     public AppAdapter(View view, Context context) {
         this.view = view;
@@ -55,7 +60,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         this.appCategory = appCategory;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class AppViewHolder extends RecyclerView.ViewHolder {
         ImageView appIcon;
         TextView txtAppName;
         LinearLayout appLayout;
@@ -63,7 +68,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         ImageButton appProperties;
         Button btnUninstall, btnBackup, btnPermission, btnPackage;
 
-        public ViewHolder(View view) {
+        public AppViewHolder(View view) {
             super(view);
             txtAppName = (TextView) view.findViewById(R.id.app_name);
             appIcon = (ImageView) view.findViewById(R.id.app_icon);
@@ -78,83 +83,105 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         }
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.app_row_layout, parent, false);
+    public class NativeExpressAdViewHolder extends RecyclerView.ViewHolder {
 
-        return new ViewHolder(itemView);
+        NativeExpressAdViewHolder(View view) {
+            super(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        final AppModel appModel = appList.get(position);
-        holder.appIcon.setImageDrawable(appModel.getAppIcon());
-        holder.txtAppName.setText(appModel.getAppName());
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case APP_VIEW_TYPE:
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.app_row_layout, parent, false);
 
-        if (appSortType == AppSortType.BYDATE) {
-            holder.txtAppDesc.setText(appModel.getFormattedDate());
-        } else {
-            holder.txtAppDesc.setText(appModel.getSize());
+                return new AppViewHolder(itemView);
+            case AD_VIEW_TYPE:
+
+            default:
+                View nativeExpressLayoutView = LayoutInflater.from(
+                        parent.getContext()).inflate(R.layout.native_express_ad_container,
+                        parent, false);
+                return new NativeExpressAdViewHolder(nativeExpressLayoutView);
         }
+    }
 
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        if (holder.appProperties != null) {
-            holder.appProperties.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showPopup(v, appModel);
+        int viewType = getItemViewType(position);
+        switch (viewType) {
+            case APP_VIEW_TYPE:
+                AppViewHolder appViewHolder = (AppViewHolder) holder;
+                final AppModel appModel = (AppModel) appList.get(position);
+                appViewHolder.appIcon.setImageDrawable(appModel.getAppIcon());
+                appViewHolder.txtAppName.setText(appModel.getAppName());
+
+                if (appSortType == AppSortType.BYDATE) {
+                    appViewHolder.txtAppDesc.setText(appModel.getFormattedDate());
+                } else {
+                    appViewHolder.txtAppDesc.setText(appModel.getSize());
                 }
-            });
-        }
 
-        if (appCategory == AppCategory.UNINSTALL) {
-            if(selectedItems.contains(appList.get(position))){
-                holder.appLayout.setActivated(true);
-                holder.btnUninstall.setVisibility(View.GONE);
-            }else{
-                holder.appLayout.setActivated(false);
-                holder.btnUninstall.setVisibility(View.VISIBLE);
-                holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CommonFunctions.uninstallApp(context,appModel);
-                    }
-                });
-            }
-        } else if (appCategory == AppCategory.BACKUP) {
-            if(selectedItems.contains(appList.get(position))){
-                holder.appLayout.setActivated(true);
-                holder.btnBackup.setVisibility(View.GONE);
-            }else{
-                holder.appLayout.setActivated(false);
-                holder.btnBackup.setVisibility(View.VISIBLE);
-                holder.btnBackup.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        List<AppModel> appModelList=new ArrayList<AppModel>();
-                        appModelList.add(appModel);
+                if (appViewHolder.appProperties != null) {
+                    appViewHolder.appProperties.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showPopup(v, appModel);
+                        }
+                    });
+                }
 
-                        CommonFunctions.backupApp(context,view,appModelList);
+                if (appCategory == AppCategory.UNINSTALL) {
+                    if (selectedItems.contains(appList.get(position))) {
+                        appViewHolder.appLayout.setActivated(true);
+                        appViewHolder.btnUninstall.setVisibility(View.GONE);
+                    } else {
+                        appViewHolder.appLayout.setActivated(false);
+                        appViewHolder.btnUninstall.setVisibility(View.VISIBLE);
+                        appViewHolder.btnUninstall.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CommonFunctions.uninstallApp(context, appModel);
+                            }
+                        });
                     }
-                });
-            }
-        } else if (appCategory == AppCategory.PERMISSIONS) {
-            holder.btnPermission.setVisibility(View.VISIBLE);
-            if (appModel.getPermissions() != null && appModel.getPermissions().length > 0) {
-                holder.btnPermission.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPermissions(appModel);
+                } else if (appCategory == AppCategory.BACKUP) {
+                    if (selectedItems.contains(appList.get(position))) {
+                        appViewHolder.appLayout.setActivated(true);
+                        appViewHolder.btnBackup.setVisibility(View.GONE);
+                    } else {
+                        appViewHolder.appLayout.setActivated(false);
+                        appViewHolder.btnBackup.setVisibility(View.VISIBLE);
+                        appViewHolder.btnBackup.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                List<Object> appModelList = new ArrayList<Object>();
+                                appModelList.add(appModel);
+
+                                CommonFunctions.backupApp(context, view, appModelList);
+                            }
+                        });
                     }
-                });
-            } else {
-                holder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
-            }
-        } else if (appCategory == AppCategory.PACKAGE) {
-            holder.txtAppDesc.setText(appModel.getPackageName());
-        }
+                } else if (appCategory == AppCategory.PERMISSIONS) {
+                    appViewHolder.btnPermission.setVisibility(View.VISIBLE);
+                    if (appModel.getPermissions() != null && appModel.getPermissions().length > 0) {
+                        appViewHolder.btnPermission.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showPermissions(appModel);
+                            }
+                        });
+                    } else {
+                        appViewHolder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
+                    }
+                } else if (appCategory == AppCategory.PACKAGE) {
+                    appViewHolder.txtAppDesc.setText(appModel.getPackageName());
+                }
 
 
 //        if(appModel.getAppType()== AppType.SYSTEMAPP){
@@ -163,6 +190,30 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 //            holder.appLayout.setBackgroundColor( context.getResources().getColor(android.R.color.holo_blue_light));
 //        }
 
+                break;
+            case AD_VIEW_TYPE:
+
+            default:
+                NativeExpressAdViewHolder nativeExpressHolder =
+                        (NativeExpressAdViewHolder) holder;
+                NativeExpressAdView adView =
+                        (NativeExpressAdView) appList.get(position);
+                ViewGroup adCardView = (ViewGroup) nativeExpressHolder.itemView;
+                // The NativeExpressAdViewHolder recycled by the RecyclerView may be a different
+                // instance than the one used previously for this position. Clear the
+                // NativeExpressAdViewHolder of any subviews in case it has a different
+                // AdView associated with it, and make sure the AdView for this position doesn't
+                // already have a parent of a different recycled NativeExpressAdViewHolder.
+                if (adCardView.getChildCount() > 0) {
+                    adCardView.removeAllViews();
+                }
+                if (adView.getParent() != null) {
+                    ((ViewGroup) adView.getParent()).removeView(adView);
+                }
+
+                // Add the Native Express ad to the native express ad view.
+                adCardView.addView(adView);
+        }
     }
 
     private void showPermissions(final AppModel appModel) {
@@ -201,6 +252,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         return appList != null ? appList.size() : 0;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return (position % 6 == 0) ? AD_VIEW_TYPE : APP_VIEW_TYPE;
+    }
+
     public void toggleSelection(int pos) {
         if (selectedItems.contains(appList.get(pos))) {
             selectedItems.remove(appList.get(pos));
@@ -220,11 +276,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         return selectedItems.size();
     }
 
-    public List<AppModel> getSelectedItems() {
+    public List<Object> getSelectedItems() {
         return selectedItems;
     }
 
-    public void setAppList(List<AppModel> appList) {
+    public void setAppList(List<Object> appList) {
         this.appSortType = PersistanceManager.getSortType(context);
         this.appList = appList;
     }
@@ -236,16 +292,16 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-                        CommonFunctions.openApp(context,appModel);
+                        CommonFunctions.openApp(context, appModel);
                         return true;
                     case R.id.share:
-                        CommonFunctions.shareApp(((Activity)context),appModel.getAppName(),appModel.getPackageName());
+                        CommonFunctions.shareApp(((Activity) context), appModel.getAppName(), appModel.getPackageName());
                         return true;
                     case R.id.play:
-                        CommonFunctions.openAppInPlayStore(context,appModel);
+                        CommonFunctions.openAppInPlayStore(context, appModel);
                         return true;
                     case R.id.app_properties:
-                        CommonFunctions.openAppProperties(context,appModel.getPackageName());
+                        CommonFunctions.openAppProperties(context, appModel.getPackageName());
                         return true;
                 }
                 return false;
@@ -253,11 +309,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         });
 
         popupMenu.inflate(R.menu.app_options);
-        if(appModel.getAppType()== AppType.USERAPP){
+        if (appModel.getAppType() == AppType.USERAPP) {
             popupMenu.getMenu().findItem(R.id.share).setVisible(true);
             popupMenu.getMenu().findItem(R.id.play).setVisible(true);
             popupMenu.getMenu().findItem(R.id.open).setVisible(true);
-        }else{
+        } else {
             popupMenu.getMenu().findItem(R.id.share).setVisible(false);
             popupMenu.getMenu().findItem(R.id.play).setVisible(false);
             popupMenu.getMenu().findItem(R.id.open).setVisible(false);

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ad_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/statelist_item_background"
+    android:clickable="true"
+    android:minHeight="@dimen/minimal_row_size"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/minimal_material_padding"
+    android:paddingRight="@dimen/minimal_material_padding">
+
+</LinearLayout>
