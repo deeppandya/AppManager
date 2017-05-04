@@ -1,5 +1,6 @@
 package com.deeppandya.appmanager.activities;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.media.ImageReader;
 import android.os.Bundle;
@@ -21,11 +22,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.appbrain.AdService;
+import com.appbrain.AppBrain;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.AppListLoader;
@@ -167,6 +171,10 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.app_menu, menu);
+
+        AdService ads = AppBrain.getAds();
+        MenuItem item = menu.findItem(R.id.action_amazing_apps);
+        ads.setOfferWallMenuItemClickListener(this, item);
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
@@ -320,6 +328,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
+        @SuppressLint("StringFormatMatches")
         String title = getString(R.string.selected_count, mAdapter.getSelectedItemCount());
         actionMode.setTitle(title);
     }

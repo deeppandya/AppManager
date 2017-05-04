@@ -17,6 +17,9 @@
     <item android:id="@+id/action_share"
         android:title="@string/share"
         app:showAsAction="never"/>
+    <item android:id="@+id/action_amazing_apps"
+        android:title="@string/amazing_apps"
+        app:showAsAction="never"/>
     <item android:id="@+id/action_exit"
         android:title="@string/exit"
         app:showAsAction="never"/>

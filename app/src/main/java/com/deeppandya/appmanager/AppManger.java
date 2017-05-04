@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.appbrain.AppBrain;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.util.FirebaseRemoteConfigJob;
 import com.evernote.android.job.JobManager;
@@ -30,6 +31,8 @@ public class AppManger extends MultiDexApplication {
         // init job scheduler
         JobManager.create(this).addJobCreator(new FirebaseRemoteConfigJob());
         FirebaseManager.configure(this);
+
+        AppBrain.init(this);
 
     }
 
