@@ -41,6 +41,7 @@
     <string name="appmanager_app_backup_banner">ca-app-pub-6103213878258636/6727222909</string>
     <string name="appmanager_app_permissions_banner">ca-app-pub-6103213878258636/8203956109</string>
     <string name="appmanager_app_package_banner">ca-app-pub-6103213878258636/9680689305</string>
+    <string name="appmanager_interstitial_unit_id">ca-app-pub-6103213878258636/6308420501</string>
 
     <string name="user_apps">User Apps</string>
     <string name="system_apps">System Apps</string>
@@ -68,11 +69,25 @@
     <string name="exit">Exit</string>
     <string name="invitation_cta">Install</string>
     <string name="invitation_message">Invitation message</string>
-    <string name="mail_feedback_subject">App Manager Feedback</string>
+    <string name="mail_feedback_subject">App Manager - Feedback</string>
     <string name="mail_feedback_message">Message</string>
     <string name="title_send_feedback">Send Feedback</string>
     <string name="mail_feedback_email">deeppandya91@gmail.com</string>
     <string name="long_press_hint">Long press on apps to select multiple apps.</string>
     <string name="backup_can_be_found">Back up can be found at %s</string>
     <string name="amazing_apps">Amazing apps</string>
+    <string name="app_uninstall_msg">Perform single or batch uninstall operations for unwanted apps that persistently take up phone memory, reducing the device performance.</string>
+    <string name="app_backup_msg">App Backup Manager is a handy tool to backup installed application to share with your friends without connecting to the internet.</string>
+    <string name="app_permission_msg">App Permissions Manager is a tool designed to resolve user\'s concern regarding permissions used by apps.</string>
+    <string name="feature_request">Feature request</string>
+    <string name="bug_report">Bug report</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="mail_feature_request_subject">App Manager - Feature request</string>
+    <string name="title_send_feature_request">Send feature request</string>
+    <string name="mail_bug_report_subject">App Manger - Bug report</string>
+    <string name="title_send_bug_report">Send bug report</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

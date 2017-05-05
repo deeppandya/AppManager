@@ -1,11 +1,8 @@
 package com.deeppandya.appmanager.activities;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.deeppandya.appmanager.R;
@@ -14,10 +11,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherAdView;
 
-public class BannerActivity extends AppCompatActivity {
+public class AdsActivity extends AppCompatActivity {
 
     private RelativeLayout mBannerView;
     private AdView mAdView;
@@ -74,7 +69,7 @@ public class BannerActivity extends AppCompatActivity {
 
     public void loadAdMobInterstitialAd() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6103213878258636/6308420501");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.appmanager_interstitial_unit_id));
 
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
@@ -125,5 +120,4 @@ public class BannerActivity extends AppCompatActivity {
         if (mAdView != null) mAdView.destroy();
         super.onDestroy();
     }
-
 }

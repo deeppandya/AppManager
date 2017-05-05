@@ -157,11 +157,11 @@ public class CommonFunctions {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+packageName+"&hl=en");
         activity.startActivity(Intent.createChooser(sharingIntent,"Share app using"));
     }
-    public static void sendFeedback(Context context) {
+    public static void sendMessageToDev(Context context, String subject, String title) {
         final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
         intent.setType("text/html");
         intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ context.getString(R.string.mail_feedback_email) });
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.mail_feedback_subject));
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.title_send_feedback)));
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT,subject );
+        context.startActivity(Intent.createChooser(intent, title));
     }
 }

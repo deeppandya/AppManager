@@ -4,17 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.appbrain.AdService;
 import com.appbrain.AppBrain;
@@ -23,10 +21,9 @@ import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.managers.AppMemoryManager;
 import com.deeppandya.appmanager.managers.AppStorageManager;
 import com.deeppandya.appmanager.managers.FirebaseManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.util.CommonFunctions;
-import com.deeppandya.appmanager.managers.PersistanceManager;
-import com.deeppandya.appmanager.managers.UninstallPreventionManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
@@ -36,15 +33,11 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 
-public class FirstActivity extends BannerActivity implements UninstallPreventionManager.UninstallPreventionListener, OnChartValueSelectedListener {
+public class FirstActivity extends AdsActivity implements OnChartValueSelectedListener {
 
     CardView uninstallCard, backupCard, permissionCard, packageCard;
 
@@ -74,7 +67,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
             @Override
             public void onClick(View v) {
                 openActivity(AppCategory.UNINSTALL);
-                //UninstallPreventionManager.getInstance().enableDeviceAdmin(FirstActivity.this, null, true);
             }
         });
 
@@ -154,12 +146,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         entries.add(new PieEntry(((float)(memoryState.getUsedSize() * 100) / memoryState.getTotalSize()), getResources().getString(R.string.used), null));
         entries.add(new PieEntry(((float)(memoryState.getFreeSize() * 100) / memoryState.getTotalSize()), getResources().getString(R.string.free), null));
 
-//        TextView txtUsedMemoryDetail=(TextView)findViewById(R.id.txtUsedMemoryDetail);
-//        txtUsedMemoryDetail.setText(CommonFunctions.humanReadableByteCount(memoryState.getUsedSize()));
-//
-//        TextView txtFreeMemoryDetail=(TextView)findViewById(R.id.txtFreeMemoryDetail);
-//        txtFreeMemoryDetail.setText(CommonFunctions.humanReadableByteCount(memoryState.getFreeSize()));
-
         setMemoryData(entries, memoryChart);
     }
 
@@ -174,21 +160,11 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         entries.add(new PieEntry(((float)(storageState.getUsedSize() * 100) / storageState.getTotalSize()), getResources().getString(R.string.used), null));
         entries.add(new PieEntry(((float)(storageState.getFreeSize() * 100) / storageState.getTotalSize()), getResources().getString(R.string.free), null));
 
-//        entries.add(new PieEntry(storageState.getUsedSize(),getResources().getString(R.string.used),null));
-//        entries.add(new PieEntry(storageState.getFreeSize(),getResources().getString(R.string.free),null));
-
-//        TextView txtUsedStorageDetail=(TextView)findViewById(R.id.txtUsedStorageDetail);
-//        txtUsedStorageDetail.setText(CommonFunctions.humanReadableByteCount(storageState.getUsedSize()));
-//
-//        TextView txtFreeStorageDetail=(TextView)findViewById(R.id.txtFreeStorageDetail);
-//        txtFreeStorageDetail.setText(CommonFunctions.humanReadableByteCount(storageState.getFreeSize()));
-
         setMemoryData(entries, storageChart);
 
     }
 
     private void setPieChart(PieChart pieChart) {
-        //pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawEntryLabels(false);
 
@@ -203,7 +179,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         pieChart.setHoleRadius(20f);
         pieChart.setTransparentCircleRadius(22f);
 
-        // add a selection listener
         pieChart.setOnChartValueSelectedListener(this);
 
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
@@ -216,8 +191,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
-        // add a lot of colors
-
         int[] colors = {R.color.colorRed, R.color.colorBlue};
 
         dataSet.setColors(colors, FirstActivity.this);
@@ -228,7 +201,6 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
         data.setValueTextColor(Color.WHITE);
         pieChart.setData(data);
 
-        // undo all highlights
         pieChart.highlightValues(null);
 
         pieChart.invalidate();
@@ -258,11 +230,17 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
             case R.id.action_help:
                 openIntro();
                 break;
-//            case R.id.action_faq:
-//
-//                break;
             case R.id.action_feedback:
-                CommonFunctions.sendFeedback(FirstActivity.this);
+                CommonFunctions.sendMessageToDev(FirstActivity.this,getResources().getString(R.string.mail_feedback_subject),getResources().getString(R.string.title_send_feedback));
+                break;
+            case R.id.action_feature_request:
+                CommonFunctions.sendMessageToDev(FirstActivity.this,getResources().getString(R.string.mail_feature_request_subject),getResources().getString(R.string.title_send_feature_request));
+                break;
+            case R.id.action_bug_report:
+                CommonFunctions.sendMessageToDev(FirstActivity.this,getResources().getString(R.string.mail_bug_report_subject),getResources().getString(R.string.title_send_bug_report));
+                break;
+            case R.id.action_privacy_policy:
+
                 break;
             case R.id.action_share:
                 CommonFunctions.shareApp(FirstActivity.this,getResources().getString(R.string.app_name),getPackageName());
@@ -280,38 +258,21 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
     }
 
     private void sendAnalyticsEvent() {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
-//        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "deep");
-//        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "deep");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     private void loadAdMobBannerAd() {
         showBanner(getString(R.string.appmanager_firstscreen_banner));
     }
 
-    private void loadDFPBannerAd() {
-//        PublisherAdView mPublisherAdView = (PublisherAdView) findViewById(R.id.publisherAdView);
-//        PublisherAdRequest adRequest = new PublisherAdRequest.Builder().build();
-//        mPublisherAdView.loadAd(adRequest);
-
-    }
-
     private void openActivity(AppCategory appCategory) {
         Intent intent = new Intent(FirstActivity.this, MainActivity.class);
         intent.putExtra("category", appCategory);
         startActivity(intent);
-    }
-
-    @Override
-    public void OnActivateDeviceAdministrator() {
-        UninstallPreventionManager.getInstance().enableDeviceAdmin(this, null, true);
-    }
-
-    @Override
-    public void OnDeactivateDeviceAdministrator() {
-        UninstallPreventionManager.getInstance().enableDeviceAdmin(this, null, false);
     }
 
     @Override

@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends BannerActivity implements LoaderManager.LoaderCallbacks<List<AppModel>>, SearchView.OnQueryTextListener,RecyclerView.OnItemTouchListener,
+public class MainActivity extends AdsActivity implements LoaderManager.LoaderCallbacks<List<AppModel>>, SearchView.OnQueryTextListener,RecyclerView.OnItemTouchListener,
         View.OnClickListener,
         ActionMode.Callback {
 
@@ -73,7 +72,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
         appNameQuery="";
 
-        setToolbarTitle(getAppcategory());
+        setToolbarTitle(getAppCategory());
 
         setHintLayout();
 
@@ -87,16 +86,16 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        if(getAppcategory()==AppCategory.UNINSTALL || getAppcategory()==AppCategory.BACKUP) {
+        if(getAppCategory()==AppCategory.UNINSTALL || getAppCategory()==AppCategory.BACKUP) {
             recyclerView.addOnItemTouchListener(this);
             gestureDetector = new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
         }
 
-        mAdapter.setAppCategory(getAppcategory());
+        mAdapter.setAppCategory(getAppCategory());
 
         recyclerView.setAdapter(mAdapter);
 
-        loadAdMobBannerAd(getAppcategory());
+        loadAdMobBannerAd(getAppCategory());
 
         getSupportLoaderManager().initLoader(ID_LOADER_APP_LIST,null,this);
 
@@ -105,9 +104,9 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     private void setHintLayout() {
         TextView txtHint=(TextView)findViewById(R.id.txtHint);
         final CardView hintLayout=(CardView)findViewById(R.id.hint_layout);
-        if(getAppcategory()==AppCategory.UNINSTALL){
+        if(getAppCategory()==AppCategory.UNINSTALL){
             txtHint.setText(getResources().getString(R.string.long_press_hint));
-        }else if(getAppcategory()==AppCategory.BACKUP){
+        }else if(getAppCategory()==AppCategory.BACKUP){
             txtHint.setText(String.format(getResources().getString(R.string.backup_can_be_found),CommonFunctions.getBackupDir()));
         }else{
             hintLayout.setVisibility(View.GONE);
@@ -154,7 +153,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
         }
     }
 
-    public AppCategory getAppcategory(){
+    public AppCategory getAppCategory(){
         if(getIntent()!=null && getIntent().getSerializableExtra("category")!=null){
             return (AppCategory)getIntent().getSerializableExtra("category");
         }
@@ -232,7 +231,6 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
                 mAdapter.setAppList(tempApps);
                 mAdapter.notifyDataSetChanged();
             }
-
         }
     }
 
@@ -346,9 +344,9 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         // Inflate a menu resource providing context menu items
         MenuInflater inflater = mode.getMenuInflater();
-        if(getAppcategory()==AppCategory.UNINSTALL)
+        if(getAppCategory()==AppCategory.UNINSTALL)
             inflater.inflate(R.menu.menu_uninstall_action_mode, menu);
-        else if(getAppcategory()==AppCategory.BACKUP)
+        else if(getAppCategory()==AppCategory.BACKUP)
             inflater.inflate(R.menu.menu_backup_action_mode, menu);
         return true;
     }

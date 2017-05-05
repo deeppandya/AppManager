@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_app_uninstall_manager"
+            android:icon="@drawable/ic_delete_black"
+            android:title="@string/app_uninstall_manager" />
+        <item
+            android:id="@+id/nav_app_backup_manager"
+            android:icon="@drawable/ic_get_app_black_24dp"
+            android:title="@string/app_backup_manager" />
+        <item
+            android:id="@+id/nav_app_permission_manager"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/app_permissions_manager" />
+        <item
+            android:id="@+id/nav_app_package_manager"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="@string/app_package_manager" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>
