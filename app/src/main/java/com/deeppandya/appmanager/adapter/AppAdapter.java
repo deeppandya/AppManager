@@ -147,6 +147,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         } else if (appCategory == AppCategory.PERMISSIONS) {
             holder.btnPermission.setVisibility(View.VISIBLE);
             if (appList.get(position).getPermissions() != null && appList.get(position).getPermissions().length > 0) {
+                holder.btnPermission.setText(context.getResources().getString(R.string.permission));
                 holder.btnPermission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
