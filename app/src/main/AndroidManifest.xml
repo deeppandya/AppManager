@@ -85,6 +85,9 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".activities.BannerActivity"
             android:screenOrientation="portrait"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fb60b511c13f9130de42f809f4db9967bbac41fc" />
     </application>
 
 </manifest>

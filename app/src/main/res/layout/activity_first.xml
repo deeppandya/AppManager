@@ -120,7 +120,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="1"
                             android:padding="8dp"
                             android:text="@string/app_uninstall_manager"
@@ -175,7 +175,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="1"
                             android:padding="8dp"
                             android:text="@string/app_backup_manager"
@@ -184,7 +184,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="2"
                             android:paddingBottom="8dp"
                             android:paddingLeft="8dp"
@@ -230,7 +230,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="1"
                             android:padding="8dp"
                             android:text="@string/app_permissions_manager"
@@ -239,7 +239,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="2"
                             android:paddingBottom="8dp"
                             android:paddingLeft="8dp"
@@ -285,7 +285,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="1"
                             android:padding="8dp"
                             android:text="@string/app_package_manager"
@@ -294,7 +294,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
+                            android:ellipsize="end"
                             android:maxLines="2"
                             android:paddingBottom="8dp"
                             android:paddingLeft="8dp"

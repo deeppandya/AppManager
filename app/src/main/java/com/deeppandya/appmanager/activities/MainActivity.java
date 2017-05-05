@@ -1,20 +1,19 @@
 package com.deeppandya.appmanager.activities;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
-import android.media.ImageReader;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.ActionMode;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -30,18 +28,15 @@ import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.AppListLoader;
 import com.deeppandya.appmanager.enums.AppCategory;
+import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.enums.SortOrder;
-import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.managers.FirebaseManager;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.DividerItemDecoration;
 import com.deeppandya.appmanager.util.FileListSorter;
-import com.deeppandya.appmanager.managers.PersistanceManager;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -320,6 +315,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
 
     private void myToggleSelection(int idx) {
         mAdapter.toggleSelection(idx);
+        @SuppressLint("StringFormatMatches")
         String title = getString(R.string.selected_count, mAdapter.getSelectedItemCount());
         actionMode.setTitle(title);
     }
@@ -397,7 +393,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
     public void onClick(View view) {
         if (view.getId() == R.id.app_layout) {
             // item click
-            int idx = recyclerView.getChildPosition(view);
+            int idx = recyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
                 myToggleSelection(idx);
                 return;
@@ -420,7 +416,7 @@ public class MainActivity extends BannerActivity implements LoaderManager.Loader
             }
             // Start the CAB using the ActionMode.Callback defined above
             actionMode = startActionMode(MainActivity.this);
-            int idx = recyclerView.getChildPosition(view);
+            int idx = recyclerView.getChildAdapterPosition(view);
             myToggleSelection(idx);
             super.onLongPress(e);
         }

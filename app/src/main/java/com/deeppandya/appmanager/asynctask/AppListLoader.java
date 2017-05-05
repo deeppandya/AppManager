@@ -66,13 +66,13 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
 
             String label = object.loadLabel(packageManager).toString();
 
-            AppModel appModel=new AppModel();
+            AppModel appModel = new AppModel();
             appModel.setPackageName(object.packageName);
-            appModel.setAppIcon(object.loadIcon(packageManager) !=null ? object.loadIcon(packageManager): new BitmapDrawable(context.getResources(),BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher)));
+            appModel.setAppIcon(object.loadIcon(packageManager) != null ? object.loadIcon(packageManager) : new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher)));
             appModel.setAppName(label == null ? object.packageName : label);
             appModel.setAppDesc(object.sourceDir);
-            appModel.setPermissions(getAppPermissions(packageManager,object.packageName));
-            appModel.setSymlink(object.flags+"");
+            appModel.setPermissions(getAppPermissions(packageManager, object.packageName));
+            appModel.setSymlink(object.flags + "");
             appModel.setSize(Formatter.formatFileSize(getContext(), sourceDir.length()));
             appModel.setLongSize(sourceDir.length());
             appModel.setDate(sourceDir.lastModified());
@@ -85,7 +85,8 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
                 appModel.setAppType(AppType.USERAPP);
             }
 
-            mApps.add(appModel);
+            if (!appModel.getPackageName().equals(context.getPackageName()))
+                mApps.add(appModel);
 
         }
 
@@ -172,6 +173,7 @@ public class AppListLoader extends AsyncTaskLoader<List<AppModel>> {
     /**
      * We would want to release resources here
      * List is nothing we would want to close
+     *
      * @param layoutelementsList
      */
     private void onReleaseResources(List<AppModel> layoutelementsList) {

@@ -87,15 +87,15 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        final AppModel appModel = appList.get(position);
-        holder.appIcon.setImageDrawable(appModel.getAppIcon());
-        holder.txtAppName.setText(appModel.getAppName());
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        holder.appIcon.setImageDrawable(appList.get(position).getAppIcon());
+        holder.txtAppName.setText(appList.get(position).getAppName());
 
         if (appSortType == AppSortType.BYDATE) {
-            holder.txtAppDesc.setText(appModel.getFormattedDate());
+            holder.txtAppDesc.setText(appList.get(position).getFormattedDate());
         } else {
-            holder.txtAppDesc.setText(appModel.getSize());
+            holder.txtAppDesc.setText(appList.get(position).getSize());
         }
 
 
@@ -103,7 +103,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             holder.appProperties.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showPopup(v, appModel);
+                    showPopup(v, appList.get(position));
                 }
             });
         }
@@ -112,13 +112,15 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             if(selectedItems.contains(appList.get(position))){
                 holder.appLayout.setActivated(true);
                 holder.btnUninstall.setVisibility(View.GONE);
+                holder.appProperties.setVisibility(View.GONE);
             }else{
                 holder.appLayout.setActivated(false);
                 holder.btnUninstall.setVisibility(View.VISIBLE);
+                holder.appProperties.setVisibility(View.VISIBLE);
                 holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CommonFunctions.uninstallApp(context,appModel);
+                        CommonFunctions.uninstallApp(context,appList.get(position));
                     }
                 });
             }
@@ -126,15 +128,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             if(selectedItems.contains(appList.get(position))){
                 holder.appLayout.setActivated(true);
                 holder.btnBackup.setVisibility(View.GONE);
+                holder.appProperties.setVisibility(View.GONE);
             }else{
                 holder.appLayout.setActivated(false);
                 holder.btnBackup.setVisibility(View.VISIBLE);
+                holder.appProperties.setVisibility(View.VISIBLE);
                 holder.btnBackup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         List<AppModel> appModelList=new ArrayList<AppModel>();
-                        appModelList.add(appModel);
+                        appModelList.add(appList.get(position));
 
                         CommonFunctions.backupApp(context,view,appModelList);
                     }
@@ -142,18 +146,18 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             }
         } else if (appCategory == AppCategory.PERMISSIONS) {
             holder.btnPermission.setVisibility(View.VISIBLE);
-            if (appModel.getPermissions() != null && appModel.getPermissions().length > 0) {
+            if (appList.get(position).getPermissions() != null && appList.get(position).getPermissions().length > 0) {
                 holder.btnPermission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showPermissions(appModel);
+                        showPermissions(appList.get(position));
                     }
                 });
             } else {
                 holder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
             }
         } else if (appCategory == AppCategory.PACKAGE) {
-            holder.txtAppDesc.setText(appModel.getPackageName());
+            holder.txtAppDesc.setText(appList.get(position).getPackageName());
         }
 
 
