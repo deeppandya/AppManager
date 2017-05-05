@@ -1,5 +1,6 @@
 package com.deeppandya.appmanager.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.util.CommonFunctions;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,8 +93,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_app_package_manager) {
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+            CommonFunctions.shareApp(NavigationDrawerActivity.this, getResources().getString(R.string.app_name), getPackageName());
+        } else if (id == R.id.nav_feedback) {
+            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feedback_subject), getResources().getString(R.string.title_send_feedback));
+        } else if (id == R.id.nav_feature_request) {
+            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feature_request_subject), getResources().getString(R.string.title_send_feature_request));
+        } else if (id == R.id.nav_bug_report) {
+            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_bug_report_subject), getResources().getString(R.string.title_send_bug_report));
+        } else if (id == R.id.nav_help) {
+            CommonFunctions.openIntro(NavigationDrawerActivity.this);
+        } else if (id == R.id.nav_privacy_policy) {
+            CommonFunctions.openWebView(NavigationDrawerActivity.this,"https://firebasestorage.googleapis.com/v0/b/app-manager-7b1bf.appspot.com/o/PrivacyPolicy.pdf?alt=media&token=f80434dc-d18c-4976-bf58-890f111cf7ad");
+        } else if (id == R.id.nav_about) {
 
         }
 

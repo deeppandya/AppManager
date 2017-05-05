@@ -11,15 +11,19 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.activities.IntroActivity;
+import com.deeppandya.appmanager.activities.NavigationDrawerActivity;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.crash.FirebaseCrash;
+import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,5 +167,39 @@ public class CommonFunctions {
         intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ context.getString(R.string.mail_feedback_email) });
         intent.putExtra(android.content.Intent.EXTRA_SUBJECT,subject );
         context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    public static void openWebViewInApp(Context context,String url){
+        new FinestWebView.Builder(context).theme(R.style.FinestWebViewTheme)
+                .titleDefault(url)
+                .showUrl(false)
+                .statusBarColorRes(R.color.colorPrimaryDark)
+                .toolbarColorRes(R.color.colorPrimary)
+                .titleColorRes(R.color.finestWhite)
+                .urlColorRes(R.color.colorPinkLight)
+                .iconDefaultColorRes(R.color.finestWhite)
+                .progressBarColorRes(R.color.finestWhite)
+                .stringResCopiedToClipboard(R.string.copied_to_clipboard)
+                .stringResCopiedToClipboard(R.string.copied_to_clipboard)
+                .stringResCopiedToClipboard(R.string.copied_to_clipboard)
+                .showSwipeRefreshLayout(true)
+                .swipeRefreshColorRes(R.color.colorPrimaryDark)
+                .menuSelector(R.drawable.selector_light_theme)
+                .menuTextGravity(Gravity.CENTER)
+                .menuTextPaddingRightRes(R.dimen.defaultMenuTextPaddingLeft)
+                .dividerHeight(0)
+                .gradientDivider(false)
+                .setCustomAnimations(R.anim.slide_up, R.anim.hold, R.anim.hold, R.anim.slide_down)
+                .show(url);
+    }
+
+    public static void openWebView(Context context,String url){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(browserIntent);
+    }
+
+    public static void openIntro(Context context) {
+        Intent introIntent = new Intent(context, IntroActivity.class);
+        context.startActivity(introIntent);
     }
 }
