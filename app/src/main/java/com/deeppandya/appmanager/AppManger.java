@@ -5,6 +5,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
+import com.appbrain.AppBrain;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.util.FirebaseRemoteConfigJob;
 import com.evernote.android.job.JobManager;
@@ -34,6 +35,8 @@ public class AppManger extends MultiDexApplication {
         JobManager.create(this).addJobCreator(new FirebaseRemoteConfigJob());
         FirebaseManager.configure(this);
         Fabric.with(this, new Crashlytics());
+
+        AppBrain.init(this);
 
     }
 

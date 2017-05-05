@@ -74,4 +74,5 @@
     <string name="mail_feedback_email">deeppandya91@gmail.com</string>
     <string name="long_press_hint">Long press on apps to select multiple apps.</string>
     <string name="backup_can_be_found">Back up can be found at %s</string>
+    <string name="amazing_apps">Amazing apps</string>
 </resources>

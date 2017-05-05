@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.appbrain.AdService;
+import com.appbrain.AppBrain;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.managers.AppMemoryManager;
@@ -236,6 +238,9 @@ public class FirstActivity extends BannerActivity implements UninstallPrevention
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.first_screen_menu, menu);
+        AdService ads = AppBrain.getAds();
+        MenuItem item = menu.findItem(R.id.action_amazing_apps);
+        ads.setOfferWallMenuItemClickListener(this, item);
         return super.onCreateOptionsMenu(menu);
     }
 

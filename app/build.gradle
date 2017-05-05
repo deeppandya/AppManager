@@ -48,6 +48,9 @@ android {
     repositories {
         mavenCentral() // jcenter() works as well because it pulls from Maven Central
         maven { url "https://jitpack.io" }
+        maven {
+            url 'http://swisscodemonkeys.github.io/appbrain-sdk/maven'
+        }
     }
 }
 
@@ -87,6 +90,8 @@ dependencies {
     compile 'com.github.satyan:sugar:1.5'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.evernote:android-job:1.0.7'
+
+    compile 'com.appbrain:appbrain-sdk:+@aar'
 
     testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {

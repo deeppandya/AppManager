@@ -22,4 +22,8 @@
         android:title="@string/system_apps"
         app:showAsAction="never"></item>
 
+    <item android:id="@+id/action_amazing_apps"
+        android:title="@string/amazing_apps"
+        app:showAsAction="never"/>
+
 </menu>
