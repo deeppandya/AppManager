@@ -208,8 +208,7 @@ public class FirstActivity extends AdsActivity implements OnChartValueSelectedLi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.first_screen_menu, menu);
+        getMenuInflater().inflate(R.menu.first_screen_menu, menu);
         AdService ads = AppBrain.getAds();
         MenuItem item = menu.findItem(R.id.action_amazing_apps);
         ads.setOfferWallMenuItemClickListener(this, item);

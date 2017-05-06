@@ -156,6 +156,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 });
             } else {
                 holder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
+                holder.btnPermission.setOnClickListener(null);
             }
         } else if (appCategory == AppCategory.PACKAGE) {
             holder.txtAppDesc.setText(appList.get(position).getPackageName());

@@ -87,6 +87,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
+
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:multidex:1.0.1'
@@ -95,9 +96,9 @@ dependencies {
     compile 'com.evernote:android-job:1.0.7'
     compile 'com.appbrain:appbrain-sdk:+@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-    testCompile 'junit:junit:4.12'
-
     compile 'com.thefinestartist:finestwebview:1.2.7'
+    compile 'com.android.support:support-v4:25.2.0'
+    testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'
