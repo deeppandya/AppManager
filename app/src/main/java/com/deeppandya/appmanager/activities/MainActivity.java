@@ -78,7 +78,7 @@ public class MainActivity extends AdsActivity implements LoaderManager.LoaderCal
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this);
+        mAdapter = new AppAdapter(findViewById(android.R.id.content), MainActivity.this,null);
 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

@@ -50,7 +50,7 @@ public class FirstActivity extends AdsActivity implements OnChartValueSelectedLi
         super.onCreate(savedInstanceState);
 
         if (PersistanceManager.getUserFirstTime(FirstActivity.this)) {
-            openIntro();
+            CommonFunctions.openIntro(FirstActivity.this,false);
         }
 
         setContentView(R.layout.activity_first);
@@ -227,7 +227,7 @@ public class FirstActivity extends AdsActivity implements OnChartValueSelectedLi
                 CommonFunctions.rateApp(FirstActivity.this);
                 break;
             case R.id.action_help:
-                openIntro();
+                CommonFunctions.openIntro(FirstActivity.this,true);
                 break;
             case R.id.action_feedback:
                 CommonFunctions.sendMessageToDev(FirstActivity.this,getResources().getString(R.string.mail_feedback_subject),getResources().getString(R.string.title_send_feedback));
@@ -249,11 +249,6 @@ public class FirstActivity extends AdsActivity implements OnChartValueSelectedLi
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openIntro() {
-        Intent introIntent = new Intent(FirstActivity.this, IntroActivity.class);
-        startActivity(introIntent);
     }
 
     private void sendAnalyticsEvent() {

@@ -93,4 +93,7 @@
     <string name="about">About</string>
     <string name="recommended_apps">Recommended apps</string>
     <string name="app_of_the_day">App of the day</string>
+    <string name="close">Close</string>
+    <string name="allow_application_manager">Allow application manager for storage permission to enable Backup Manager</string>
+    <string name="deny">Deny</string>
 </resources>

@@ -1,30 +1,46 @@
 package com.deeppandya.appmanager.fragments;
 
 
+import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
-import com.deeppandya.appmanager.asynctask.AppListLoader;
 import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
 import com.deeppandya.appmanager.enums.AppCategory;
+import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.enums.AppType;
+import com.deeppandya.appmanager.enums.SortOrder;
+import com.deeppandya.appmanager.listeners.AppSortListener;
 import com.deeppandya.appmanager.listeners.GetAppsListener;
+import com.deeppandya.appmanager.listeners.GetAppsView;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
+import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.model.AppModel;
+import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.FileListSorter;
 
 import java.util.ArrayList;
@@ -34,16 +50,16 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SystemAppFragment extends Fragment{
+public class SystemAppFragment extends AdsFragment implements GetAppsView,SearchView.OnQueryTextListener,AppSortListener{
 
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
     private List<AppModel> apps;
 
-    public static final int ID_LOADER_APP_LIST = 0;
-
     private View rootView;
     private AppCategory appCategory;
+    private String appNameQuery;
+    private GetAppsAsyncTask getAppsAsyncTask;
 
     public SystemAppFragment() {
         // Required empty public constructor
@@ -56,6 +72,10 @@ public class SystemAppFragment extends Fragment{
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_system_app, container, false);
 
+        setHasOptionsMenu(true);
+
+        appNameQuery="";
+
         if(getArguments()!=null && getArguments().get("category")!=null){
             appCategory=(AppCategory)getArguments().get("category");
         }
@@ -66,7 +86,7 @@ public class SystemAppFragment extends Fragment{
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
-        mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity());
+        mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(),this);
 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -79,7 +99,45 @@ public class SystemAppFragment extends Fragment{
 
         getApps();
 
+        loadAdMobBannerAd();
+
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        if(getAppsAsyncTask!=null &&  (getAppsAsyncTask.getStatus()== AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus()==AsyncTask.Status.PENDING)){
+            getAppsAsyncTask.cancel(true);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        menu.clear();
+
+        inflater.inflate(R.menu.apps_menu, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        getActivity();
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_sortby:
+                showSortDialog(this);
+                break;
+            default:
+                break;
+        }
+
+        return false;
     }
 
     private void getApps() {
@@ -98,7 +156,7 @@ public class SystemAppFragment extends Fragment{
                 recyclerView.setVisibility(View.VISIBLE);
                 rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
 
-                setAppAdapter(false, true, "");
+                setAppAdapter(false, true, appNameQuery);
             }
 
             @Override
@@ -107,7 +165,7 @@ public class SystemAppFragment extends Fragment{
             }
         };
 
-        GetAppsAsyncTask getAppsAsyncTask = new GetAppsAsyncTask(getActivity(), getAppsListener);
+        getAppsAsyncTask = new GetAppsAsyncTask(getActivity(), getAppsListener);
         getAppsAsyncTask.execute();
 
     }
@@ -115,7 +173,13 @@ public class SystemAppFragment extends Fragment{
     private void setHintLayout() {
         TextView txtHint = (TextView) rootView.findViewById(R.id.txtHint);
         final CardView hintLayout = (CardView) rootView.findViewById(R.id.hint_layout);
-        txtHint.setText(getResources().getString(R.string.long_press_hint));
+        if (appCategory == AppCategory.UNINSTALL) {
+            txtHint.setText(getResources().getString(R.string.long_press_hint));
+        } else if (appCategory == AppCategory.BACKUP) {
+            txtHint.setText(String.format(getResources().getString(R.string.backup_can_be_found), CommonFunctions.getBackupDir()));
+        } else {
+            hintLayout.setVisibility(View.GONE);
+        }
 
         ImageView btnClose = (ImageView) rootView.findViewById(R.id.btnHintCancel);
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -154,22 +218,64 @@ public class SystemAppFragment extends Fragment{
         }
     }
 
-    private void loadAdMobBannerAd(AppCategory appCategory) {
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        appNameQuery=query;
+        setAppAdapter(false,true,appNameQuery);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        appNameQuery=newText;
+        setAppAdapter(false,true,appNameQuery);
+        return true;
+    }
+    private void loadAdMobBannerAd() {
 
         String adUnitId="";
 
         if(appCategory==AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_uninstall_banner);
-            //showBanner(adUnitId);
+            showBanner(rootView,adUnitId);
         }else if(appCategory==AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_backup_banner);
-            //showBanner(adUnitId);
+            showBanner(rootView,adUnitId);
         }else if(appCategory==AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_permissions_banner);
-            //showBanner(adUnitId);
+            showBanner(rootView,adUnitId);
         }else if(appCategory==AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)){
             adUnitId=getResources().getString(R.string.appmanager_app_package_banner);
-            //showBanner(adUnitId);
+            showBanner(rootView,adUnitId);
         }
     }
+
+    @Override
+    public void createAppBackup(){
+        if (RuntimePermissionManager.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            RuntimePermissionManager.requestPermission(getActivity(), getActivity().findViewById(android.R.id.content), Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    RuntimePermissionManager.PERMISSIONS_ACCOUNT, RuntimePermissionManager.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE,
+                    getResources().getString(R.string.storage_permission_permissions_needed));
+        } else {
+            if (mAdapter != null)
+                CommonFunctions.backupApp(getActivity(), getActivity().findViewById(android.R.id.content), mAdapter.getAppModelBackUpList());
+        }
+    }
+
+    @Override
+    public void onPositiveClick(int which) {
+        PersistanceManager.setSortOrder(getActivity(), SortOrder.ASC);
+        PersistanceManager.setSortType(getActivity(), AppSortType.getSortTypeByInt(which));
+
+        setAppAdapter(true, false, appNameQuery);
+    }
+
+    @Override
+    public void onNegativeClick(int which) {
+        PersistanceManager.setSortOrder(getActivity(), SortOrder.DESC);
+        PersistanceManager.setSortType(getActivity(), AppSortType.getSortTypeByInt(which));
+
+        setAppAdapter(true, false, appNameQuery);
+    }
+
 }

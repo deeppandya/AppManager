@@ -97,6 +97,7 @@ dependencies {
     compile 'com.appbrain:appbrain-sdk:+@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile 'com.thefinestartist:finestwebview:1.2.7'
+    compile 'org.jokar:permissiondispatcher:2.0.8'
     compile 'com.android.support:support-v4:25.2.0'
     testCompile 'junit:junit:4.12'
 }

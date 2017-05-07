@@ -25,6 +25,7 @@ import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.enums.AppType;
+import com.deeppandya.appmanager.listeners.GetAppsView;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
@@ -38,17 +39,21 @@ import java.util.List;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
+    private final GetAppsView getAppsView;
     private View view;
     private Context context;
     private AppCategory appCategory;
     private AppSortType appSortType;
     private List<AppModel> selectedItems;
     private List<AppModel> appList;
+    private List<AppModel> appModelBackUpList;
 
-    public AppAdapter(View view, Context context) {
+    public AppAdapter(View view, Context context, GetAppsView getAppsView) {
         this.view = view;
         this.context = context;
+        this.getAppsView=getAppsView;
         selectedItems = new ArrayList<>();
+        appModelBackUpList=new ArrayList<AppModel>();
     }
 
     public void setAppCategory(AppCategory appCategory) {
@@ -136,11 +141,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnBackup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        List<AppModel> appModelList=new ArrayList<AppModel>();
-                        appModelList.add(appList.get(position));
-
-                        CommonFunctions.backupApp(context,view,appModelList);
+                        appModelBackUpList.clear();
+                        appModelBackUpList.add(appList.get(position));
+                        getAppsView.createAppBackup();
                     }
                 });
             }
@@ -161,14 +164,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         } else if (appCategory == AppCategory.PACKAGE) {
             holder.txtAppDesc.setText(appList.get(position).getPackageName());
         }
-
-
-//        if(appModel.getAppType()== AppType.SYSTEMAPP){
-//            holder.appLayout.setBackgroundColor( context.getResources().getColor(android.R.color.holo_red_light));
-//        }else{
-//            holder.appLayout.setBackgroundColor( context.getResources().getColor(android.R.color.holo_blue_light));
-//        }
-
     }
 
     private void showPermissions(final AppModel appModel) {
@@ -269,5 +264,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             popupMenu.getMenu().findItem(R.id.open).setVisible(false);
         }
         popupMenu.show();
+    }
+
+    public List<AppModel> getAppModelBackUpList() {
+        return appModelBackUpList;
     }
 }

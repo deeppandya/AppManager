@@ -198,8 +198,9 @@ public class CommonFunctions {
         context.startActivity(browserIntent);
     }
 
-    public static void openIntro(Context context) {
+    public static void openIntro(Context context,boolean isHelp) {
         Intent introIntent = new Intent(context, IntroActivity.class);
+        introIntent.putExtra("isHelp",isHelp);
         context.startActivity(introIntent);
     }
 }
