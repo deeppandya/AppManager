@@ -313,7 +313,7 @@ public class NavigationDrawerActivity extends AdsActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 NavigationDrawerActivity.this);
 
-        // set title
+        // set txtGroupText
         alertDialogBuilder.setTitle(getResources().getString(R.string.about));
 
         // set dialog message

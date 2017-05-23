@@ -19,7 +19,6 @@
             android:alpha="0.30"
             android:scaleType="fitCenter" />
 
-
     </FrameLayout>
 
 

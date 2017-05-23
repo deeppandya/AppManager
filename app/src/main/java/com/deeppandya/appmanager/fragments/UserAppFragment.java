@@ -170,9 +170,10 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
     private void setHintLayout() {
         TextView txtHint = (TextView) rootView.findViewById(R.id.txtHint);
         final CardView hintLayout = (CardView) rootView.findViewById(R.id.hint_layout);
-        if (appCategory == AppCategory.UNINSTALL) {
-            txtHint.setText(getResources().getString(R.string.long_press_hint));
-        } else if (appCategory == AppCategory.BACKUP) {
+//        if (appCategory == AppCategory.UNINSTALL) {
+//            txtHint.setText(getResources().getString(R.string.long_press_hint));
+//        }
+        if (appCategory == AppCategory.BACKUP && PersistanceManager.getBackupHint(getActivity())) {
             txtHint.setText(String.format(getResources().getString(R.string.backup_can_be_found), CommonFunctions.getBackupDir()));
         } else {
             hintLayout.setVisibility(View.GONE);
@@ -182,6 +183,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PersistanceManager.setBackupHint(getActivity(),false);
                 hintLayout.setVisibility(View.GONE);
             }
         });

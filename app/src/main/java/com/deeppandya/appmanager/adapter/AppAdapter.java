@@ -3,6 +3,7 @@ package com.deeppandya.appmanager.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.graphics.drawable.ColorDrawable;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.activities.PermissionsActivity;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.enums.AppSortType;
 import com.deeppandya.appmanager.enums.AppType;
@@ -31,6 +33,7 @@ import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,9 +54,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
     public AppAdapter(View view, Context context, GetAppsView getAppsView) {
         this.view = view;
         this.context = context;
-        this.getAppsView=getAppsView;
+        this.getAppsView = getAppsView;
         selectedItems = new ArrayList<>();
-        appModelBackUpList=new ArrayList<AppModel>();
+        appModelBackUpList = new ArrayList<AppModel>();
     }
 
     public void setAppCategory(AppCategory appCategory) {
@@ -114,27 +117,27 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         }
 
         if (appCategory == AppCategory.UNINSTALL) {
-            if(selectedItems.contains(appList.get(position))){
+            if (selectedItems.contains(appList.get(position))) {
                 holder.appLayout.setActivated(true);
                 holder.btnUninstall.setVisibility(View.GONE);
                 holder.appProperties.setVisibility(View.GONE);
-            }else{
+            } else {
                 holder.appLayout.setActivated(false);
                 holder.btnUninstall.setVisibility(View.VISIBLE);
                 holder.appProperties.setVisibility(View.VISIBLE);
                 holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CommonFunctions.uninstallApp(context,appList.get(position));
+                        CommonFunctions.uninstallApp(context, appList.get(position));
                     }
                 });
             }
         } else if (appCategory == AppCategory.BACKUP) {
-            if(selectedItems.contains(appList.get(position))){
+            if (selectedItems.contains(appList.get(position))) {
                 holder.appLayout.setActivated(true);
                 holder.btnBackup.setVisibility(View.GONE);
                 holder.appProperties.setVisibility(View.GONE);
-            }else{
+            } else {
                 holder.appLayout.setActivated(false);
                 holder.btnBackup.setVisibility(View.VISIBLE);
                 holder.appProperties.setVisibility(View.VISIBLE);
@@ -154,13 +157,31 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnPermission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showPermissions(appList.get(position));
+                        //showPermissions(appList.get(position));
+
+                        String[] permissions=new String[appList.get(position).getPermissions().length];
+                        for(int i=0;i<appList.get(position).getPermissions().length;i++){
+                            permissions[i]=(appList.get(position).getPermissions()[i]).toString();
+                        }
+
+                        Intent intent=new Intent(context, PermissionsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("permissions", permissions);
+                        intent.putExtra("appName", appList.get(position).getAppName());
+                        intent.putExtra("packageName", appList.get(position).getPackageName());
+                        context.startActivity(intent);
                     }
                 });
             } else {
                 holder.btnPermission.setText(context.getResources().getString(R.string.no_permission));
                 holder.btnPermission.setOnClickListener(null);
             }
+
+            if (appList.get(position).getPermissions()!=null && appList.get(position).getPermissions().length > 0)
+                holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), appList.get(position).getPermissions().length));
+            else
+                holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), 0));
+
         } else if (appCategory == AppCategory.PACKAGE) {
             holder.txtAppDesc.setText(appList.get(position).getPackageName());
         }
@@ -237,16 +258,16 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-                        CommonFunctions.openApp(context,appModel);
+                        CommonFunctions.openApp(context, appModel);
                         return true;
                     case R.id.share:
-                        CommonFunctions.shareApp(((Activity)context),appModel.getAppName(),appModel.getPackageName());
+                        CommonFunctions.shareApp(((Activity) context), appModel.getAppName(), appModel.getPackageName());
                         return true;
                     case R.id.play:
-                        CommonFunctions.openAppInPlayStore(context,appModel);
+                        CommonFunctions.openAppInPlayStore(context, appModel);
                         return true;
                     case R.id.app_properties:
-                        CommonFunctions.openAppProperties(context,appModel.getPackageName());
+                        CommonFunctions.openAppProperties(context, appModel.getPackageName());
                         return true;
                 }
                 return false;
@@ -254,11 +275,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         });
 
         popupMenu.inflate(R.menu.app_options);
-        if(appModel.getAppType()== AppType.USERAPP){
+        if (appModel.getAppType() == AppType.USERAPP) {
             popupMenu.getMenu().findItem(R.id.share).setVisible(true);
             popupMenu.getMenu().findItem(R.id.play).setVisible(true);
             popupMenu.getMenu().findItem(R.id.open).setVisible(true);
-        }else{
+        } else {
             popupMenu.getMenu().findItem(R.id.share).setVisible(false);
             popupMenu.getMenu().findItem(R.id.play).setVisible(false);
             popupMenu.getMenu().findItem(R.id.open).setVisible(false);

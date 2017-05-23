@@ -18,6 +18,7 @@ public class PersistanceManager {
     public static final String SORT_TYPE = "sort_type";
 
     public static final String SORT_ORDER = "sort_order";
+    public static final String BACKUP_HINT = "backup_hint";
 
     public static void setSortType(Context context, AppSortType appSortType) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -57,4 +58,15 @@ public class PersistanceManager {
         editor.apply();
     }
 
+    public static boolean getBackupHint(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(BACKUP_HINT, true);
+    }
+
+    public static void setBackupHint(Context context, boolean settingValue) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(BACKUP_HINT, settingValue);
+        editor.apply();
+    }
 }

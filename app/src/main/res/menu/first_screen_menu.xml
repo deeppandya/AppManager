@@ -9,7 +9,7 @@
         android:title="@string/help"
         app:showAsAction="never"/>
     <!--<item android:id="@+id/action_faq"-->
-        <!--android:title="@string/faq"-->
+        <!--android:txtGroupText="@string/faq"-->
         <!--app:showAsAction="never"/>-->
     <item android:id="@+id/action_feedback"
         android:title="@string/feedback"

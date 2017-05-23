@@ -12,6 +12,7 @@ import com.evernote.android.job.JobRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -31,6 +32,7 @@ public class FirebaseManager {
 
     private static FirebaseRemoteConfig firebaseRemoteConfig;
     private static FirebaseAnalytics firebaseAnalytics;
+    private static FirebaseDatabase firebaseDatabase;
     private static Context sContext;
 
     private FirebaseManager() {
@@ -63,6 +65,16 @@ public class FirebaseManager {
         return firebaseAnalytics;
     }
 
+
+    public static FirebaseDatabase getFirebaseDatabase() {
+        if (sContext == null) {
+            throw new IllegalStateException("FirebaseUtils needs to be configured before use.");
+        }
+        if (firebaseDatabase == null) {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+        }
+        return firebaseDatabase;
+    }
     private static void configureSyncJob() {
         new JobRequest.Builder(SyncRemoteConfig.TAG)
                 .setPeriodic(21600000)

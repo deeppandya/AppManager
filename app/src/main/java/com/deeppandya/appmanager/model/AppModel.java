@@ -7,13 +7,14 @@ import android.os.Parcelable;
 import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.util.CommonFunctions;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * Created by d_pandya on 3/7/17.
  */
 
-public class AppModel {
+public class AppModel implements Serializable{
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 

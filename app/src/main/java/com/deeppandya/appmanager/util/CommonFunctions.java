@@ -148,25 +148,20 @@ public class CommonFunctions {
     }
 
     public static void shareApp(Activity activity, String appName, String packageName){
-//        Intent intent = new AppInviteInvitation.IntentBuilder(appName)
-//                .setMessage(activity.getString(R.string.invitation_message))
-//                .setDeepLink(Uri.parse("http://play.google.com/store/apps/details?id=" + packageName))
-//                .setCallToActionText(activity.getString(R.string.invitation_cta))
-//                .build();
-//        activity.startActivityForResult(intent,REQUEST_INVITE);
 
-        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-        sharingIntent.setType("text/html");
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT,appName);
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+packageName+"&hl=en");
-        activity.startActivity(Intent.createChooser(sharingIntent,"Share app using"));
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT,appName);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+packageName+"&hl=en");
+        sendIntent.setType("text/plain");
+        activity.startActivity(sendIntent);
+
     }
     public static void sendMessageToDev(Context context, String subject, String title) {
-        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-        intent.setType("text/html");
-        intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ context.getString(R.string.mail_feedback_email) });
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT,subject );
-        context.startActivity(Intent.createChooser(intent, title));
+        Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + context.getString(R.string.mail_feedback_email)));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        context.startActivity(intent);
+
     }
 
     public static void openWebViewInApp(Context context,String url){

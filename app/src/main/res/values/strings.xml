@@ -96,4 +96,6 @@
     <string name="close">Close</string>
     <string name="allow_application_manager">Allow application manager for storage permission to enable Backup Manager</string>
     <string name="deny">Deny</string>
+    <string name="number_of_permissions">%s permissions</string>
+    <string name="go_to_settings">Go to settings</string>
 </resources>
