@@ -89,7 +89,7 @@
 
         <activity
             android:name=".activities.NavigationDrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -102,7 +102,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.PermissionsActivity"></activity>
+        <activity android:name=".activities.PermissionsActivity" />
+
+        <receiver
+            android:name=".receiver.PackageChangeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

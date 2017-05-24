@@ -3,12 +3,11 @@ package com.deeppandya.appmanager.fragments;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
@@ -25,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
@@ -36,10 +34,13 @@ import com.deeppandya.appmanager.enums.SortOrder;
 import com.deeppandya.appmanager.listeners.AppSortListener;
 import com.deeppandya.appmanager.listeners.GetAppsListener;
 import com.deeppandya.appmanager.listeners.GetAppsView;
+import com.deeppandya.appmanager.listeners.OnPackageChanged;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.model.AppModel;
+import com.deeppandya.appmanager.receiver.PackageChangeReceiver;
+import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.FileListSorter;
 
@@ -50,7 +51,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SystemAppFragment extends AdsFragment implements GetAppsView,SearchView.OnQueryTextListener,AppSortListener{
+public class SystemAppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener, AppSortListener, OnPackageChanged {
 
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
@@ -60,6 +61,7 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
     private AppCategory appCategory;
     private String appNameQuery;
     private GetAppsAsyncTask getAppsAsyncTask;
+    private PackageChangeReceiver packageChangeReceiver;
 
     public SystemAppFragment() {
         // Required empty public constructor
@@ -72,12 +74,15 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_system_app, container, false);
 
+        packageChangeReceiver = new PackageChangeReceiver(this);
+
+
         setHasOptionsMenu(true);
 
-        appNameQuery="";
+        appNameQuery = "";
 
-        if(getArguments()!=null && getArguments().get("category")!=null){
-            appCategory=(AppCategory)getArguments().get("category");
+        if (getArguments() != null && getArguments().get("category") != null) {
+            appCategory = (AppCategory) getArguments().get("category");
         }
 
         apps = new ArrayList<>();
@@ -86,7 +91,7 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
-        mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(),this);
+        mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(), this);
 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -106,7 +111,7 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
 
     @Override
     public void onDestroy() {
-        if(getAppsAsyncTask!=null &&  (getAppsAsyncTask.getStatus()== AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus()==AsyncTask.Status.PENDING)){
+        if (getAppsAsyncTask != null && (getAppsAsyncTask.getStatus() == AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus() == AsyncTask.Status.PENDING)) {
             getAppsAsyncTask.cancel(true);
         }
         super.onDestroy();
@@ -186,7 +191,7 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PersistanceManager.setBackupHint(getActivity(),false);
+                PersistanceManager.setBackupHint(getActivity(), false);
                 hintLayout.setVisibility(View.GONE);
             }
         });
@@ -222,38 +227,39 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        appNameQuery=query;
-        setAppAdapter(false,true,appNameQuery);
+        appNameQuery = query;
+        setAppAdapter(false, true, appNameQuery);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        appNameQuery=newText;
-        setAppAdapter(false,true,appNameQuery);
+        appNameQuery = newText;
+        setAppAdapter(false, true, appNameQuery);
         return true;
     }
+
     private void loadAdMobBannerAd() {
 
-        String adUnitId="";
+        String adUnitId = "";
 
-        if(appCategory==AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)){
-            adUnitId=getResources().getString(R.string.appmanager_app_uninstall_banner);
-            showBanner(rootView,adUnitId);
-        }else if(appCategory==AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)){
-            adUnitId=getResources().getString(R.string.appmanager_app_backup_banner);
-            showBanner(rootView,adUnitId);
-        }else if(appCategory==AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)){
-            adUnitId=getResources().getString(R.string.appmanager_app_permissions_banner);
-            showBanner(rootView,adUnitId);
-        }else if(appCategory==AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)){
-            adUnitId=getResources().getString(R.string.appmanager_app_package_banner);
-            showBanner(rootView,adUnitId);
+        if (appCategory == AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)) {
+            adUnitId = getResources().getString(R.string.appmanager_app_uninstall_banner);
+            showBanner(rootView, adUnitId);
+        } else if (appCategory == AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)) {
+            adUnitId = getResources().getString(R.string.appmanager_app_backup_banner);
+            showBanner(rootView, adUnitId);
+        } else if (appCategory == AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)) {
+            adUnitId = getResources().getString(R.string.appmanager_app_permissions_banner);
+            showBanner(rootView, adUnitId);
+        } else if (appCategory == AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)) {
+            adUnitId = getResources().getString(R.string.appmanager_app_package_banner);
+            showBanner(rootView, adUnitId);
         }
     }
 
     @Override
-    public void createAppBackup(){
+    public void createAppBackup() {
         if (RuntimePermissionManager.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             RuntimePermissionManager.requestPermission(getActivity(), getActivity().findViewById(android.R.id.content), Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     RuntimePermissionManager.PERMISSIONS_ACCOUNT, RuntimePermissionManager.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE,
@@ -280,4 +286,13 @@ public class SystemAppFragment extends AdsFragment implements GetAppsView,Search
         setAppAdapter(true, false, appNameQuery);
     }
 
+    @Override
+    public void onPackageChanged() {
+        getApps();
+    }
+
+    @Override
+    public void registerReceiver(BroadcastReceiver packageReceiver, IntentFilter filter) {
+        getActivity().registerReceiver(packageReceiver, filter);
+    }
 }

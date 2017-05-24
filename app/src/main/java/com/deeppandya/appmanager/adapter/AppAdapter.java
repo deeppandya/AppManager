@@ -121,6 +121,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.appLayout.setActivated(true);
                 holder.btnUninstall.setVisibility(View.GONE);
                 holder.appProperties.setVisibility(View.GONE);
+            } else if (appList.get(position).getAppType() == AppType.SYSTEMAPP) {
+                holder.btnUninstall.setVisibility(View.GONE);
             } else {
                 holder.appLayout.setActivated(false);
                 holder.btnUninstall.setVisibility(View.VISIBLE);
@@ -159,12 +161,12 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                     public void onClick(View v) {
                         //showPermissions(appList.get(position));
 
-                        String[] permissions=new String[appList.get(position).getPermissions().length];
-                        for(int i=0;i<appList.get(position).getPermissions().length;i++){
-                            permissions[i]=(appList.get(position).getPermissions()[i]).toString();
+                        String[] permissions = new String[appList.get(position).getPermissions().length];
+                        for (int i = 0; i < appList.get(position).getPermissions().length; i++) {
+                            permissions[i] = (appList.get(position).getPermissions()[i]).toString();
                         }
 
-                        Intent intent=new Intent(context, PermissionsActivity.class);
+                        Intent intent = new Intent(context, PermissionsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("permissions", permissions);
                         intent.putExtra("appName", appList.get(position).getAppName());
@@ -177,7 +179,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnPermission.setOnClickListener(null);
             }
 
-            if (appList.get(position).getPermissions()!=null && appList.get(position).getPermissions().length > 0)
+            if (appList.get(position).getPermissions() != null && appList.get(position).getPermissions().length > 0)
                 holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), appList.get(position).getPermissions().length));
             else
                 holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), 0));

@@ -3,7 +3,9 @@ package com.deeppandya.appmanager.fragments;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
@@ -33,10 +34,13 @@ import com.deeppandya.appmanager.enums.SortOrder;
 import com.deeppandya.appmanager.listeners.AppSortListener;
 import com.deeppandya.appmanager.listeners.GetAppsListener;
 import com.deeppandya.appmanager.listeners.GetAppsView;
+import com.deeppandya.appmanager.listeners.OnPackageChanged;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.model.AppModel;
+import com.deeppandya.appmanager.receiver.PackageChangeReceiver;
+import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.FileListSorter;
 
@@ -47,7 +51,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserAppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener,AppSortListener {
+public class UserAppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener, AppSortListener, OnPackageChanged {
 
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
@@ -58,6 +62,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
     private View rootView;
     private AppCategory appCategory;
     private GetAppsAsyncTask getAppsAsyncTask;
+    private PackageChangeReceiver packageChangeReceiver;
 
     public UserAppFragment() {
         // Required empty public constructor
@@ -69,6 +74,8 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_user_app, container, false);
+
+        packageChangeReceiver = new PackageChangeReceiver(this);
 
         setHasOptionsMenu(true);
 
@@ -104,7 +111,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
 
     @Override
     public void onDestroy() {
-        if(getAppsAsyncTask!=null &&  (getAppsAsyncTask.getStatus()== AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus()==AsyncTask.Status.PENDING)){
+        if (getAppsAsyncTask != null && (getAppsAsyncTask.getStatus() == AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus() == AsyncTask.Status.PENDING)) {
             getAppsAsyncTask.cancel(true);
         }
         super.onDestroy();
@@ -183,7 +190,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PersistanceManager.setBackupHint(getActivity(),false);
+                PersistanceManager.setBackupHint(getActivity(), false);
                 hintLayout.setVisibility(View.GONE);
             }
         });
@@ -276,5 +283,15 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
         PersistanceManager.setSortType(getActivity(), AppSortType.getSortTypeByInt(which));
 
         setAppAdapter(true, false, appNameQuery);
+    }
+
+    @Override
+    public void onPackageChanged() {
+        getApps();
+    }
+
+    @Override
+    public void registerReceiver(BroadcastReceiver packageReceiver, IntentFilter filter) {
+        getActivity().registerReceiver(packageReceiver, filter);
     }
 }
