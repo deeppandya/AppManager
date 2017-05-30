@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
@@ -48,6 +49,8 @@ public class FirstActivity extends AdsActivity implements OnChartValueSelectedLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (PersistanceManager.getUserFirstTime(FirstActivity.this)) {
             CommonFunctions.openIntro(FirstActivity.this,false);

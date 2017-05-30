@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -51,7 +52,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserAppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener, AppSortListener, OnPackageChanged {
+public class AppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener, AppSortListener, OnPackageChanged {
 
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
@@ -63,8 +64,9 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
     private AppCategory appCategory;
     private GetAppsAsyncTask getAppsAsyncTask;
     private PackageChangeReceiver packageChangeReceiver;
+    private String appType;
 
-    public UserAppFragment() {
+    public AppFragment() {
         // Required empty public constructor
     }
 
@@ -85,6 +87,10 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
             appCategory = (AppCategory) getArguments().get("category");
         }
 
+        if (getArguments() != null && getArguments().get("type") != null) {
+            appType = getArguments().getString("type");
+        }
+
         apps = new ArrayList<>();
 
         setHintLayout();
@@ -94,7 +100,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
         mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(), this);
 
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -160,7 +166,7 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
                 recyclerView.setVisibility(View.VISIBLE);
                 rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
 
-                setAppAdapter(true, false, appNameQuery);
+                setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
             }
 
             @Override
@@ -172,6 +178,14 @@ public class UserAppFragment extends AdsFragment implements GetAppsView, SearchV
         getAppsAsyncTask = new GetAppsAsyncTask(getActivity(), getAppsListener);
         getAppsAsyncTask.execute();
 
+    }
+
+    private boolean isUserApp() {
+        return (appType!=null && appType.equals(AppType.USERAPP.toString()))?true:false;
+    }
+
+    private boolean isSystemApp() {
+        return (appType!=null && appType.equals(AppType.SYSTEMAPP.toString()))?true:false;
     }
 
     private void setHintLayout() {

@@ -8,8 +8,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
-import com.deeppandya.appmanager.fragments.SystemAppFragment;
-import com.deeppandya.appmanager.fragments.UserAppFragment;
+import com.deeppandya.appmanager.enums.AppType;
+import com.deeppandya.appmanager.fragments.AppFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by deeppandya on 2017-05-06.
@@ -21,19 +24,24 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
     private AppCategory appCategory;
 
     // tab titles
-    private String[] tabTitles;
+    private List<String> tabTitles;
 
     public TabPagerAdapter(Context context, FragmentManager fm, int NumOfTabs, AppCategory appCategory) {
         super(fm);
         this.context=context;
-        tabTitles= new String[]{context.getResources().getString(R.string.user_apps),context.getResources().getString(R.string.system_apps)};
+        tabTitles=new ArrayList<>();
+        tabTitles.add(context.getResources().getString(R.string.user_apps));
+        tabTitles.add(context.getResources().getString(R.string.system_apps));
+//        if(appCategory==AppCategory.BACKUP){
+//            tabTitles.add(context.getResources().getString(R.string.backed_up_apps));
+//        }
         this.mNumOfTabs = NumOfTabs;
         this.appCategory=appCategory;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return tabTitles[position];
+        return tabTitles.get(position);
     }
 
     @Override
@@ -41,17 +49,27 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                UserAppFragment userAppFragment=new UserAppFragment();
+                AppFragment appFragment =new AppFragment();
                 Bundle userAppBundle=new Bundle();
                 userAppBundle.putSerializable("category", appCategory);
-                userAppFragment.setArguments(userAppBundle);
-                return userAppFragment;
+                userAppBundle.putString("type", AppType.USERAPP.toString());
+                appFragment.setArguments(userAppBundle);
+                return appFragment;
             case 1:
-                SystemAppFragment systemAppFragment=new SystemAppFragment();
+                AppFragment systemAppFragment=new AppFragment();
                 Bundle systemAppBundle=new Bundle();
                 systemAppBundle.putSerializable("category", appCategory);
+                systemAppBundle.putString("type", AppType.SYSTEMAPP.toString());
                 systemAppFragment.setArguments(systemAppBundle);
                 return systemAppFragment;
+
+            case 2:
+                AppFragment backedUpAppFragment=new AppFragment();
+                Bundle backedUpAppBundle=new Bundle();
+                backedUpAppBundle.putSerializable("category", appCategory);
+                backedUpAppBundle.putString("type", AppType.BACKEDUPAPP.toString());
+                backedUpAppFragment.setArguments(backedUpAppBundle);
+                return backedUpAppFragment;
 
             default:
                 return null;

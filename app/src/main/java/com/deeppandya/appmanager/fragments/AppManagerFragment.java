@@ -36,6 +36,9 @@ public class AppManagerFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.user_apps)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.system_apps)));
+//        if(appCategory==AppCategory.BACKUP){
+//            tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.backed_up_apps)));
+//        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);

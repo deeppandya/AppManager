@@ -52,7 +52,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter<PermissionsAdapter.
         String groupText=permissionModel.getGroupText().substring(0, 1).toUpperCase() + permissionModel.getGroupText().substring(1);
         holder.txtGroupText.setText(groupText);
         holder.txtPermissionText.setText(permissionModel.getPermissionText());
-        holder.permissionIcon.setImageDrawable(context.getResources().getDrawable(permissionModel.getPermissionIcon()));
+        holder.permissionIcon.setImageResource(permissionModel.getPermissionIcon());
     }
 
     @Override

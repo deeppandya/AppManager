@@ -16,6 +16,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,10 +42,16 @@ public class NavigationDrawerActivity extends AdsActivity
     private View navHeader;
     private LinearLayout imgRate, imgAppOfTheDay, imgOfferWall;
     private Handler mHandler;
+    private AdService appBrainAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        appBrainAds = AppBrain.getAds();
+
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -216,10 +223,10 @@ public class NavigationDrawerActivity extends AdsActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(NavigationDrawerActivity.this, getResources().getString(R.string.recommended_apps), Toast.LENGTH_SHORT).show();
-                AdService ads = AppBrain.getAds();
-                ads.setOfferWallClickListener(NavigationDrawerActivity.this, view);
             }
         });
+
+        appBrainAds.setOfferWallClickListener(NavigationDrawerActivity.this, imgOfferWall);
     }
 
     private void loadFragment(final Fragment fragment) {
@@ -288,7 +295,7 @@ public class NavigationDrawerActivity extends AdsActivity
         } else if (id == R.id.nav_help) {
             CommonFunctions.openIntro(NavigationDrawerActivity.this, true);
         } else if (id == R.id.nav_privacy_policy) {
-            CommonFunctions.openWebView(NavigationDrawerActivity.this, "https://firebasestorage.googleapis.com/v0/b/app-manager-7b1bf.appspot.com/o/PrivacyPolicy.pdf?alt=media&token=f80434dc-d18c-4976-bf58-890f111cf7ad");
+            CommonFunctions.openWebView(NavigationDrawerActivity.this, "https://firebasestorage.googleapis.com/v0/b/app-manager-7b1bf.appspot.com/o/PrivacyPolicy.pdf?alt=media&token=1cc45b77-9fbc-4587-a70b-b23c494f1709");
         } else if (id == R.id.nav_about) {
             openAboutDialog();
         }

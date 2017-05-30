@@ -5,5 +5,5 @@ package com.deeppandya.appmanager.enums;
  */
 
 public enum AppType {
-    USERAPP,SYSTEMAPP
+    USERAPP,SYSTEMAPP,BACKEDUPAPP
 }
