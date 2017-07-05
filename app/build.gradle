@@ -77,7 +77,6 @@ dependencies {
     compile "com.google.firebase:firebase-core:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-crash:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-messaging:${playServicesLibraryVersion}"
-    compile "com.google.firebase:firebase-ads:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-config:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-invites:${playServicesLibraryVersion}"
     compile "com.google.firebase:firebase-database:${playServicesLibraryVersion}"
@@ -101,7 +100,15 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile 'com.thefinestartist:finestwebview:1.2.7'
     compile 'org.jokar:permissiondispatcher:2.0.8'
-    compile 'com.android.support:support-v4:25.2.0'
+
+    compile('com.mopub:mopub-sdk:4.9.0@aar') {
+        transitive = true
+    }
+
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    compile 'com.facebook.android:audience-network-sdk:4.12.0@aar'
+
     testCompile 'junit:junit:4.12'
 }
 

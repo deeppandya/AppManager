@@ -2,7 +2,6 @@ package com.deeppandya.appmanager.activities;
 
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deeppandya.appmanager.R;
-import com.deeppandya.appmanager.util.BulletTextUtil;
-import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.managers.PersistanceManager;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 public class IntroActivity extends AdsActivity {
@@ -188,7 +182,7 @@ public class IntroActivity extends AdsActivity {
             @Override
             public void onClick(View v) {
 
-                loadAdMobInterstitialAd();
+                loadInterstitialAd();
 
                 //  update 1st time pref
                 PersistanceManager.setUserFirstTime(IntroActivity.this, false);
@@ -252,7 +246,7 @@ public class IntroActivity extends AdsActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_pager, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_pager_item, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             TextView sectionTxt = (TextView) rootView.findViewById(R.id.section_text);
 

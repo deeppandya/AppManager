@@ -18,6 +18,10 @@
             android:id="@+id/nav_app_package_manager"
             android:icon="@drawable/ic_android_black_24dp"
             android:title="@string/app_package_manager" />
+        <!--<item-->
+            <!--android:id="@+id/nav_app_backedup_manager"-->
+            <!--android:icon="@drawable/ic_shop_black_24dp"-->
+            <!--android:title="@string/app_backedup_manager" />-->
     </group>
 
     <item android:title="Communicate">

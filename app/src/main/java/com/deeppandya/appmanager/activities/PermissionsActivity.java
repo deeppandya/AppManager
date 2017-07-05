@@ -48,7 +48,7 @@ public class PermissionsActivity extends AdsActivity {
             @Override
             public void onClick(View view) {
                 CommonFunctions.openAppProperties(PermissionsActivity.this, getAppPackageName());
-                loadAdMobInterstitialAd();
+                loadInterstitialAd();
             }
         });
 

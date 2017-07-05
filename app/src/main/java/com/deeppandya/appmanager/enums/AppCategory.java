@@ -5,5 +5,5 @@ package com.deeppandya.appmanager.enums;
  */
 
 public enum AppCategory {
-    UNINSTALL,BACKUP,PERMISSIONS,PACKAGE;
+    UNINSTALL,BACKUP,PERMISSIONS,PACKAGE,BACKEDUP;
 }

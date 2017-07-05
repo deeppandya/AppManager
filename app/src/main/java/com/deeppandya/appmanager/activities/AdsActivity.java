@@ -3,126 +3,89 @@ package com.deeppandya.appmanager.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.RelativeLayout;
 
-import com.deeppandya.appmanager.BuildConfig;
-import com.deeppandya.appmanager.R;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.InterstitialAdListener;
+import com.mopub.mobileads.MoPubErrorCode;
+import com.mopub.mobileads.MoPubInterstitial;
 
-public class AdsActivity extends AppCompatActivity {
+public class AdsActivity extends AppCompatActivity implements InterstitialAdListener,MoPubInterstitial.InterstitialAdListener{
 
-    private RelativeLayout mBannerView;
-    private AdView mAdView;
+    private static final String TAG = AdsActivity.class.getName();
     private InterstitialAd mInterstitialAd;
+    private MoPubInterstitial mMopubInterstitial;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public void showBanner(String unitId) {
-        if (!BuildConfig.DEBUG) {
-            mBannerView = (RelativeLayout) findViewById(R.id.bannerView);
-            mAdView = new AdView(this);
-            mAdView.setAdSize(AdSize.BANNER);
-            mAdView.setAdUnitId(unitId);
-            //mAdView.setAdUnitId("/6499/example/banner"); // Test Id
-            mBannerView.addView(mAdView);
+    protected void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(this, "291507681300038_309703792813760");
+        mInterstitialAd.setAdListener(this);
+        mInterstitialAd.loadAd();
+    }
 
-            mAdView.setAdListener(new AdListener() {
-                @Override
-                public void onAdClosed() {
-                    super.onAdClosed();
-                }
+    protected void loadMopubInterstitialAd(){
+        mMopubInterstitial = new MoPubInterstitial(this, "493437314eae4f36a307db56502e9cb5");
+        mMopubInterstitial.setInterstitialAdListener(this);
+        mMopubInterstitial.load();
+    }
 
-                @Override
-                public void onAdFailedToLoad(int i) {
+    @Override
+    public void onError(Ad ad, AdError error) {
+        Log.e(TAG,error.getErrorMessage());
+    }
 
-                    Log.e("onAdFailedToLoad", i + "");
+    @Override
+    public void onAdLoaded(Ad ad) {
+        // Ad is loaded and ready to be displayed
+        // You can now display the full screen add using this code:
+        mInterstitialAd.show();
+    }
 
-                    super.onAdFailedToLoad(i);
-                }
+    @Override
+    public void onAdClicked(Ad ad) {
 
-                @Override
-                public void onAdLeftApplication() {
-                    super.onAdLeftApplication();
-                }
+    }
 
-                @Override
-                public void onAdOpened() {
-                    super.onAdOpened();
-                }
+    @Override
+    public void onInterstitialDisplayed(Ad ad) {
 
-                @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                }
-            });
+    }
 
-            AdRequest adRequest = new AdRequest.Builder()
-                    //.addTestDevice("DD88CB4BC53A57945289D53A627F700A")
-                    .build();
-            mAdView.loadAd(adRequest);
+    @Override
+    public void onInterstitialDismissed(Ad ad) {
+
+    }
+
+    @Override
+    public void onInterstitialLoaded(MoPubInterstitial interstitial) {
+        if (interstitial.isReady()) {
+            interstitial.show();
         }
     }
 
-    public void loadAdMobInterstitialAd() {
-        if (!BuildConfig.DEBUG) {
-            mInterstitialAd = new InterstitialAd(this);
-            mInterstitialAd.setAdUnitId(getResources().getString(R.string.appmanager_interstitial_unit_id));
+    @Override
+    public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
 
-            mInterstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdClosed() {
-                    //requestNewInterstitial();
-                }
-
-                @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    }
-                }
-
-                @Override
-                public void onAdFailedToLoad(int i) {
-                    super.onAdFailedToLoad(i);
-                    Log.e("onerror", i + "");
-                }
-            });
-
-            requestNewInterstitial();
-        }
-    }
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("DD88CB4BC53A57945289D53A627F700A")
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
-    protected void onPause() {
-        if (mAdView != null) mAdView.pause();
-        super.onPause();
+    public void onInterstitialShown(MoPubInterstitial interstitial) {
+
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mAdView != null) mAdView.resume();
+    public void onInterstitialClicked(MoPubInterstitial interstitial) {
+
     }
 
     @Override
-    protected void onDestroy() {
-        if (mAdView != null) mAdView.destroy();
-        super.onDestroy();
+    public void onInterstitialDismissed(MoPubInterstitial interstitial) {
+
     }
 }

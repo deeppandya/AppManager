@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,15 +28,17 @@ import android.widget.Toast;
 import com.appbrain.AdService;
 import com.appbrain.AppBrain;
 import com.deeppandya.appmanager.enums.AppCategory;
+import com.deeppandya.appmanager.fragments.AppBackedUpFragment;
 import com.deeppandya.appmanager.fragments.AppManagerFragment;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
+import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 
 public class NavigationDrawerActivity extends AdsActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AppBackedUpFragment.OnListFragmentInteractionListener {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -78,7 +81,7 @@ public class NavigationDrawerActivity extends AdsActivity
         }
 
         if (!PersistanceManager.getUserFirstTime(NavigationDrawerActivity.this) && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.LAUNCH_INTERSTITIAL)) {
-            loadAdMobInterstitialAd();
+            loadInterstitialAd();
         }
     }
 
@@ -195,6 +198,8 @@ public class NavigationDrawerActivity extends AdsActivity
             getSupportActionBar().setTitle(getResources().getString(R.string.permission_manager));
         } else if (appCategory == AppCategory.PACKAGE) {
             getSupportActionBar().setTitle(getResources().getString(R.string.package_manager));
+        } else if (appCategory == AppCategory.BACKEDUP) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.backed_up_apps));
         }
     }
 
@@ -214,7 +219,7 @@ public class NavigationDrawerActivity extends AdsActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(NavigationDrawerActivity.this, getResources().getString(R.string.app_of_the_day), Toast.LENGTH_SHORT).show();
-                loadAdMobInterstitialAd();
+                loadInterstitialAd();
             }
         });
 
@@ -284,7 +289,11 @@ public class NavigationDrawerActivity extends AdsActivity
             loadAppPermissionsManagerFragment();
         } else if (id == R.id.nav_app_package_manager) {
             loadAppPackageManagerFragment();
-        } else if (id == R.id.nav_share) {
+        }
+// else if (id == R.id.nav_app_backedup_manager) {
+//            loadAppBackedUpManagerFragment();
+//        }
+        else if (id == R.id.nav_share) {
             CommonFunctions.shareApp(NavigationDrawerActivity.this, getResources().getString(R.string.app_name), getPackageName());
         } else if (id == R.id.nav_feedback) {
             CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feedback_subject), getResources().getString(R.string.title_send_feedback));
@@ -303,6 +312,14 @@ public class NavigationDrawerActivity extends AdsActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loadAppBackedUpManagerFragment() {
+
+        Fragment fragment = new AppBackedUpFragment();
+        setToolbarTitle(AppCategory.BACKUP);
+
+        loadFragment(fragment);
     }
 
     private void openAboutDialog() {
@@ -339,5 +356,10 @@ public class NavigationDrawerActivity extends AdsActivity
 
         // show it
         alertDialog.show();
+    }
+
+    @Override
+    public void onListFragmentInteraction(AppModel appModel) {
+        Log.e("item Clicked", appModel.getAppName());
     }
 }

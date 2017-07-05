@@ -32,9 +32,6 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
         tabTitles=new ArrayList<>();
         tabTitles.add(context.getResources().getString(R.string.user_apps));
         tabTitles.add(context.getResources().getString(R.string.system_apps));
-//        if(appCategory==AppCategory.BACKUP){
-//            tabTitles.add(context.getResources().getString(R.string.backed_up_apps));
-//        }
         this.mNumOfTabs = NumOfTabs;
         this.appCategory=appCategory;
     }

@@ -15,12 +15,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.deeppandya.appmanager.AppManager;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.activities.IntroActivity;
 import com.deeppandya.appmanager.activities.NavigationDrawerActivity;
+import com.deeppandya.appmanager.activities.StartUpActivity;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
+import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
+import com.deeppandya.appmanager.listeners.GetAppsListener;
+import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.model.AppModel;
-import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.crash.FirebaseCrash;
 import com.thefinestartist.finestwebview.FinestWebView;
@@ -157,6 +161,7 @@ public class CommonFunctions {
         activity.startActivity(sendIntent);
 
     }
+
     public static void sendMessageToDev(Context context, String subject, String title) {
         Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + context.getString(R.string.mail_feedback_email)));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -198,4 +203,10 @@ public class CommonFunctions {
         introIntent.putExtra("isHelp",isHelp);
         context.startActivity(introIntent);
     }
+
+    public static void setApps(Context context, GetAppsListener getAppsListener) {
+        GetAppsAsyncTask getAppsAsyncTask = new GetAppsAsyncTask(context, getAppsListener);
+        getAppsAsyncTask.execute();
+    }
+
 }

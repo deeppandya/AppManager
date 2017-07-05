@@ -8,9 +8,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
-import com.deeppandya.appmanager.activities.FirstActivity;
 import com.deeppandya.appmanager.R;
+import com.deeppandya.appmanager.activities.StartUpActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -61,7 +60,7 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
      * @param remoteMessage FCM message body received.
      */
     private void sendNotification(RemoteMessage remoteMessage) {
-        Intent intent = new Intent(this, FirstActivity.class);
+        Intent intent = new Intent(this, StartUpActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

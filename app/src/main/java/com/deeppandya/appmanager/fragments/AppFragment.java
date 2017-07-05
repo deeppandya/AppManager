@@ -13,9 +13,9 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.deeppandya.appmanager.AppManager;
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.AppAdapter;
 import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
@@ -36,14 +38,17 @@ import com.deeppandya.appmanager.listeners.AppSortListener;
 import com.deeppandya.appmanager.listeners.GetAppsListener;
 import com.deeppandya.appmanager.listeners.GetAppsView;
 import com.deeppandya.appmanager.listeners.OnPackageChanged;
-import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageChangeReceiver;
-import com.deeppandya.appmanager.receiver.PackageReceiver;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.FileListSorter;
+import com.mopub.nativeads.MoPubNativeAdLoadedListener;
+import com.mopub.nativeads.MoPubNativeAdPositioning;
+import com.mopub.nativeads.MoPubRecyclerAdapter;
+import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
+import com.mopub.nativeads.ViewBinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,9 +59,9 @@ import java.util.List;
  */
 public class AppFragment extends AdsFragment implements GetAppsView, SearchView.OnQueryTextListener, AppSortListener, OnPackageChanged {
 
+    private static final String TAG = AppFragment.class.getName();
     private RecyclerView recyclerView;
     private AppAdapter mAdapter;
-    private List<AppModel> apps;
 
     private String appNameQuery;
 
@@ -65,6 +70,8 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     private GetAppsAsyncTask getAppsAsyncTask;
     private PackageChangeReceiver packageChangeReceiver;
     private String appType;
+
+    private MaterialDialog.Builder materialDialogBuilder;
 
     public AppFragment() {
         // Required empty public constructor
@@ -75,7 +82,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_user_app, container, false);
+        rootView = inflater.inflate(R.layout.fragment_app, container, false);
 
         packageChangeReceiver = new PackageChangeReceiver(this);
 
@@ -91,8 +98,6 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
             appType = getArguments().getString("type");
         }
 
-        apps = new ArrayList<>();
-
         setHintLayout();
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -100,7 +105,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(), this);
 
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),1);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -120,20 +125,27 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         if (getAppsAsyncTask != null && (getAppsAsyncTask.getStatus() == AsyncTask.Status.RUNNING || getAppsAsyncTask.getStatus() == AsyncTask.Status.PENDING)) {
             getAppsAsyncTask.cancel(true);
         }
+
+        if (packageChangeReceiver != null) {
+            getActivity().unregisterReceiver(packageChangeReceiver);
+        }
+
+        if (materialDialogBuilder != null) {
+            materialDialogBuilder = null;
+        }
+
         super.onDestroy();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
+        super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-
         inflater.inflate(R.menu.apps_menu, menu);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -151,41 +163,53 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     }
 
     private void getApps() {
-        GetAppsListener getAppsListener = new GetAppsListener() {
+        recyclerView.setVisibility(View.GONE);
+        rootView.findViewById(R.id.mainProgress).setVisibility(View.VISIBLE);
+
+        recyclerView.setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
+
+        setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
+
+        //setAdAdapter();
+
+        rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
+
+    }
+
+    private void setAdAdapter() {
+        MoPubRecyclerAdapter myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), mAdapter,new MoPubNativeAdPositioning.MoPubServerPositioning());
+        // Create an ad renderer and view binder that describe your native ad layout.
+        ViewBinder myViewBinder = new ViewBinder.Builder(R.layout.app_ad)
+                .titleId(R.id.native_ad_title)
+                .textId(R.id.native_ad_body)
+                .iconImageId(R.id.native_ad_icon)
+                .callToActionId(R.id.native_ad_icon)
+                .build();
+
+        MoPubStaticNativeAdRenderer myRenderer = new MoPubStaticNativeAdRenderer(myViewBinder);
+
+        myMoPubAdapter.registerAdRenderer(myRenderer);
+        myMoPubAdapter.loadAds("493437314eae4f36a307db56502e9cb5");
+        myMoPubAdapter.setAdLoadedListener(new MoPubNativeAdLoadedListener() {
             @Override
-            public void beforeGetApps() {
-                recyclerView.setVisibility(View.GONE);
-                rootView.findViewById(R.id.mainProgress).setVisibility(View.VISIBLE);
+            public void onAdLoaded(int position) {
+                Log.e(TAG,"AdPosition");
             }
 
             @Override
-            public void afterGetApps(List<AppModel> appModels) {
-                apps.clear();
-                apps = appModels;
+            public void onAdRemoved(int position) {
 
-                recyclerView.setVisibility(View.VISIBLE);
-                rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
-
-                setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
             }
-
-            @Override
-            public void onError() {
-                rootView.findViewById(R.id.mainProgress).setVisibility(View.GONE);
-            }
-        };
-
-        getAppsAsyncTask = new GetAppsAsyncTask(getActivity(), getAppsListener);
-        getAppsAsyncTask.execute();
-
+        });
     }
 
     private boolean isUserApp() {
-        return (appType!=null && appType.equals(AppType.USERAPP.toString()))?true:false;
+        return (appType != null && appType.equals(AppType.USERAPP.toString())) ? true : false;
     }
 
     private boolean isSystemApp() {
-        return (appType!=null && appType.equals(AppType.SYSTEMAPP.toString()))?true:false;
+        return (appType != null && appType.equals(AppType.SYSTEMAPP.toString())) ? true : false;
     }
 
     private void setHintLayout() {
@@ -212,11 +236,11 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
 
     private void setAppAdapter(boolean isUserApps, boolean isSystemApps, String query) {
 
-        if (apps != null && apps.size() > 0) {
+        if (AppManager.apps != null && AppManager.apps.size() > 0) {
 
             List<AppModel> tempApps = new ArrayList<>();
 
-            for (AppModel appModel : apps) {
+            for (AppModel appModel : AppManager.apps) {
 
                 if (appModel.getAppName().toLowerCase().contains(query.toLowerCase())) {
                     if (isUserApps && appModel.getAppType() == AppType.USERAPP) {
@@ -241,34 +265,36 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     @Override
     public boolean onQueryTextSubmit(String query) {
         appNameQuery = query;
-        setAppAdapter(true, false, appNameQuery);
+        setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         appNameQuery = newText;
-        setAppAdapter(true, false, appNameQuery);
+        setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
         return true;
     }
 
     private void loadAdMobBannerAd() {
 
-        String adUnitId = "";
+//        String adUnitId = "";
+//
+//        if (appCategory == AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)) {
+//            adUnitId = getResources().getString(R.string.appmanager_app_uninstall_banner);
+//            showBanner(rootView, adUnitId);
+//        } else if (appCategory == AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)) {
+//            adUnitId = getResources().getString(R.string.appmanager_app_backup_banner);
+//            showBanner(rootView, adUnitId);
+//        } else if (appCategory == AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)) {
+//            adUnitId = getResources().getString(R.string.appmanager_app_permissions_banner);
+//            showBanner(rootView, adUnitId);
+//        } else if (appCategory == AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)) {
+//            adUnitId = getResources().getString(R.string.appmanager_app_package_banner);
+//            showBanner(rootView, adUnitId);
+//        }
 
-        if (appCategory == AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)) {
-            adUnitId = getResources().getString(R.string.appmanager_app_uninstall_banner);
-            showBanner(rootView, adUnitId);
-        } else if (appCategory == AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)) {
-            adUnitId = getResources().getString(R.string.appmanager_app_backup_banner);
-            showBanner(rootView, adUnitId);
-        } else if (appCategory == AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)) {
-            adUnitId = getResources().getString(R.string.appmanager_app_permissions_banner);
-            showBanner(rootView, adUnitId);
-        } else if (appCategory == AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)) {
-            adUnitId = getResources().getString(R.string.appmanager_app_package_banner);
-            showBanner(rootView, adUnitId);
-        }
+        showBanner(rootView);
     }
 
     @Override
@@ -288,7 +314,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         PersistanceManager.setSortOrder(getActivity(), SortOrder.ASC);
         PersistanceManager.setSortType(getActivity(), AppSortType.getSortTypeByInt(which));
 
-        setAppAdapter(true, false, appNameQuery);
+        setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
     }
 
     @Override
@@ -296,16 +322,74 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         PersistanceManager.setSortOrder(getActivity(), SortOrder.DESC);
         PersistanceManager.setSortType(getActivity(), AppSortType.getSortTypeByInt(which));
 
-        setAppAdapter(true, false, appNameQuery);
+        setAppAdapter(isUserApp(), isSystemApp(), appNameQuery);
     }
 
     @Override
     public void onPackageChanged() {
-        getApps();
+        GetAppsListener getAppsListener = new GetAppsListener() {
+            @Override
+            public void beforeGetApps() {
+                recyclerView.setVisibility(View.GONE);
+                rootView.findViewById(R.id.mainProgress).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterGetApps(List<AppModel> appModels) {
+                AppManager.apps.clear();
+                AppManager.apps = appModels;
+
+                getApps();
+
+            }
+
+            @Override
+            public void onError() {
+                rootView.findViewById(R.id.mainProgress).setVisibility(View.INVISIBLE);
+            }
+        };
+
+        CommonFunctions.setApps(getActivity(),getAppsListener);
     }
 
     @Override
     public void registerReceiver(BroadcastReceiver packageReceiver, IntentFilter filter) {
         getActivity().registerReceiver(packageReceiver, filter);
+    }
+
+    private void showSortDialog(final AppSortListener appSortListener) {
+        String[] sort = getResources().getStringArray(R.array.sortbyApps);
+        AppSortType current = PersistanceManager.getSortType(getActivity());
+        materialDialogBuilder = new MaterialDialog.Builder(getActivity());
+        materialDialogBuilder.items(sort).itemsCallbackSingleChoice(current.getSortTypeValue(), new MaterialDialog.ListCallbackSingleChoice() {
+            @Override
+            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                return true;
+            }
+        });
+        materialDialogBuilder.positiveText(R.string.ascending).positiveColor(getResources().getColor(R.color.colorAccent));
+        materialDialogBuilder.negativeText(R.string.descending).negativeColor(getResources().getColor(R.color.colorAccent));
+        materialDialogBuilder.callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                super.onPositive(dialog);
+                int which = dialog.getSelectedIndex();
+
+                appSortListener.onPositiveClick(which);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onNegative(MaterialDialog dialog) {
+                super.onNegative(dialog);
+                int which = dialog.getSelectedIndex();
+
+                appSortListener.onNegativeClick(which);
+                dialog.dismiss();
+            }
+        });
+        materialDialogBuilder.title(R.string.sortby);
+        materialDialogBuilder.build().show();
     }
 }
