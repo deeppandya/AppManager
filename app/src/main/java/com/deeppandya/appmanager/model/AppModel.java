@@ -1,9 +1,6 @@
 package com.deeppandya.appmanager.model;
 
 import android.graphics.drawable.Drawable;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.deeppandya.appmanager.enums.AppType;
 import com.deeppandya.appmanager.util.CommonFunctions;
 
@@ -47,7 +44,7 @@ public class AppModel implements Serializable{
 
     public void setAppIcon(Drawable appIcon){this.appIcon = appIcon;}
     public String getAppDesc() {
-        return appDesc.toString();
+        return appDesc;
     }
 
     public void setAppName(String appName) {
@@ -55,7 +52,7 @@ public class AppModel implements Serializable{
     }
 
     public String getAppName() {
-        return appName.toString();
+        return appName;
     }
 
     public void setAppDesc(String appDesc) {
@@ -87,7 +84,7 @@ public class AppModel implements Serializable{
         return date;
     }
 
-    public void setFormattedDate(String formattedDate) {
+    private void setFormattedDate(String formattedDate) {
         this.formattedDate = formattedDate;
     }
 
@@ -109,12 +106,6 @@ public class AppModel implements Serializable{
 
     public String getSymlink() {
         return symlink;
-    }
-
-    public boolean hasSymlink() {
-        if (getSymlink() != null && getSymlink().length() != 0) {
-            return true;
-        } else return false;
     }
 
     public AppType getAppType() {

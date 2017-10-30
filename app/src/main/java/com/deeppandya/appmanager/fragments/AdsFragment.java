@@ -71,6 +71,11 @@ public class AdsFragment extends Fragment implements InterstitialAdListener {
 
     }
 
+    @Override
+    public void onLoggingImpression(Ad ad) {
+
+    }
+
 
     @Override
     public void onInterstitialDisplayed(Ad ad) {

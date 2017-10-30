@@ -104,4 +104,7 @@
     <string name="developed_by">Developed by Logiciel Apps</string>
 
     <string name="facebook_app_id">291507681300038</string>
+    <string name="not_now">Not Now</string>
+    <string name="how_was_your_exp">How was your experience using Application manager?</string>
+    <string name="tell_us_what_went_wrong">Tell us what went wrong\nWe\'ll work on it!</string>
 </resources>

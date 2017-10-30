@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:orientation="vertical"
-    tools:showIn="@layout/activity_main">
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -21,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:textColor="@color/finestWhite"
+        android:textColor="@color/white"
         android:background="@color/colorPrimary"
         android:text="@string/go_to_settings"/>
 

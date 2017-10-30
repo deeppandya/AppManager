@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
@@ -77,6 +78,11 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -277,23 +283,6 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     }
 
     private void loadAdMobBannerAd() {
-
-//        String adUnitId = "";
-//
-//        if (appCategory == AppCategory.UNINSTALL && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.UNINSTALL_BANNER)) {
-//            adUnitId = getResources().getString(R.string.appmanager_app_uninstall_banner);
-//            showBanner(rootView, adUnitId);
-//        } else if (appCategory == AppCategory.BACKUP && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.BACKUP_BANNER)) {
-//            adUnitId = getResources().getString(R.string.appmanager_app_backup_banner);
-//            showBanner(rootView, adUnitId);
-//        } else if (appCategory == AppCategory.PERMISSIONS && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PERMISSION_BANNER)) {
-//            adUnitId = getResources().getString(R.string.appmanager_app_permissions_banner);
-//            showBanner(rootView, adUnitId);
-//        } else if (appCategory == AppCategory.PACKAGE && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.PACKAGE_BANNER)) {
-//            adUnitId = getResources().getString(R.string.appmanager_app_package_banner);
-//            showBanner(rootView, adUnitId);
-//        }
-
         showBanner(rootView);
     }
 

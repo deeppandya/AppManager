@@ -2,6 +2,7 @@ package com.deeppandya.appmanager.activities;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -27,15 +28,17 @@ import android.widget.Toast;
 
 import com.appbrain.AdService;
 import com.appbrain.AppBrain;
+import com.codemybrainsout.ratingdialog.RatingDialog;
+import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.enums.AppCategory;
 import com.deeppandya.appmanager.fragments.AppBackedUpFragment;
 import com.deeppandya.appmanager.fragments.AppManagerFragment;
-import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.managers.FirebaseManager;
 import com.deeppandya.appmanager.managers.PersistanceManager;
 import com.deeppandya.appmanager.managers.RuntimePermissionManager;
 import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
+import com.deeppandya.appmanager.util.FirebaseUtil;
 
 public class NavigationDrawerActivity extends AdsActivity
         implements NavigationView.OnNavigationItemSelectedListener, AppBackedUpFragment.OnListFragmentInteractionListener {
@@ -46,6 +49,8 @@ public class NavigationDrawerActivity extends AdsActivity
     private LinearLayout imgRate, imgAppOfTheDay, imgOfferWall;
     private Handler mHandler;
     private AdService appBrainAds;
+
+    float mainRating = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,8 @@ public class NavigationDrawerActivity extends AdsActivity
         if (!PersistanceManager.getUserFirstTime(NavigationDrawerActivity.this) && FirebaseManager.getRemoteConfig().getBoolean(FirebaseManager.LAUNCH_INTERSTITIAL)) {
             loadInterstitialAd();
         }
+
+        setRating(false);
     }
 
     private void askForStoragePermission() {
@@ -210,7 +217,8 @@ public class NavigationDrawerActivity extends AdsActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(NavigationDrawerActivity.this, getResources().getString(R.string.rate_us), Toast.LENGTH_SHORT).show();
-                CommonFunctions.rateApp(NavigationDrawerActivity.this);
+                //CommonFunctions.rateApp(NavigationDrawerActivity.this);
+                setRating(true);
             }
         });
 
@@ -296,11 +304,20 @@ public class NavigationDrawerActivity extends AdsActivity
         else if (id == R.id.nav_share) {
             CommonFunctions.shareApp(NavigationDrawerActivity.this, getResources().getString(R.string.app_name), getPackageName());
         } else if (id == R.id.nav_feedback) {
-            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feedback_subject), getResources().getString(R.string.title_send_feedback));
+            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feedback_subject), getResources().getString(R.string.title_send_feedback));
+            Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
+            intent.putExtra("action", IssueReporterActivity.FEEDBACK);
+            startActivity(intent);
         } else if (id == R.id.nav_feature_request) {
-            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feature_request_subject), getResources().getString(R.string.title_send_feature_request));
+            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feature_request_subject), getResources().getString(R.string.title_send_feature_request));
+            Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
+            intent.putExtra("action", IssueReporterActivity.FEATUREREQUEST);
+            startActivity(intent);
         } else if (id == R.id.nav_bug_report) {
-            CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_bug_report_subject), getResources().getString(R.string.title_send_bug_report));
+            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_bug_report_subject), getResources().getString(R.string.title_send_bug_report));
+            Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
+            intent.putExtra("action", IssueReporterActivity.BUGREPORT);
+            startActivity(intent);
         } else if (id == R.id.nav_help) {
             CommonFunctions.openIntro(NavigationDrawerActivity.this, true);
         } else if (id == R.id.nav_privacy_policy) {
@@ -361,5 +378,45 @@ public class NavigationDrawerActivity extends AdsActivity
     @Override
     public void onListFragmentInteraction(AppModel appModel) {
         Log.e("item Clicked", appModel.getAppName());
+    }
+
+    private void setRating(boolean isFromMenu) {
+
+        final RatingDialog.Builder ratingDialogBuilder = new RatingDialog.Builder(this);
+
+        ratingDialogBuilder.icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                .title(getResources().getString(R.string.how_was_your_exp))
+                .titleTextColor(R.color.black)
+                .positiveButtonText(getResources().getString(R.string.not_now))
+                .negativeButtonText(getResources().getString(R.string.rating_dialog_never))
+                .positiveButtonTextColor(R.color.white)
+                .negativeButtonTextColor(R.color.grey_500)
+                .formTitle(getResources().getString(R.string.title_send_feedback))
+                .formHint(getResources().getString(R.string.tell_us_what_went_wrong))
+                .formSubmitText(getResources().getString(R.string.rating_dialog_submit))
+                .formCancelText(getResources().getString(R.string.rating_dialog_cancel))
+                .ratingBarColor(R.color.colorAccent)
+                .threshold(4)
+                .positiveButtonBackgroundColor(R.drawable.button_selector_positive)
+                .negativeButtonBackgroundColor(R.drawable.button_selector_negative)
+                .onRatingChanged(new RatingDialog.Builder.RatingDialogListener() {
+                    @Override
+                    public void onRatingSelected(float rating, boolean thresholdCleared) {
+                        mainRating = rating;
+                    }
+                })
+                .onRatingBarFormSumbit(new RatingDialog.Builder.RatingDialogFormListener() {
+                    @Override
+                    public void onFormSubmitted(String feedback) {
+                        FirebaseUtil.saveUserFeedbackToFirebase(mainRating, feedback);
+                    }
+                });
+
+        if (!isFromMenu) {
+            ratingDialogBuilder.session(3);
+        }
+
+        RatingDialog ratingDialog = ratingDialogBuilder.build();
+        ratingDialog.show();
     }
 }

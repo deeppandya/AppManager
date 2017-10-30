@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.deeppandya.appmanager.managers.FirebaseManager;
+import com.deeppandya.appmanager.util.FirebaseUtil;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.InterstitialAd;
@@ -21,6 +23,15 @@ public class AdsActivity extends AppCompatActivity implements InterstitialAdList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loginUser();
+
+    }
+
+    private void loginUser() {
+        if (FirebaseManager.getFirebaseAuth().getCurrentUser() == null) {
+            FirebaseUtil.anonymousUserLogin();
+        }
     }
 
     protected void loadInterstitialAd() {
@@ -49,6 +60,11 @@ public class AdsActivity extends AppCompatActivity implements InterstitialAdList
 
     @Override
     public void onAdClicked(Ad ad) {
+
+    }
+
+    @Override
+    public void onLoggingImpression(Ad ad) {
 
     }
 

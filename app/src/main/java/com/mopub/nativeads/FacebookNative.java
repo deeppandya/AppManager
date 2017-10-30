@@ -4,12 +4,12 @@ package com.mopub.nativeads;
  * Created by d_pandya on 9/13/16.
  */
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdListener;
-import com.facebook.ads.ImpressionListener;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAd.Rating;
@@ -49,10 +49,10 @@ public class FacebookNative extends CustomEventNative {
 
     // CustomEventNative implementation
     @Override
-    protected void loadNativeAd(final Context context,
-                                final CustomEventNativeListener customEventNativeListener,
-                                final Map<String, Object> localExtras,
-                                final Map<String, String> serverExtras) {
+    protected void loadNativeAd(@NonNull final Context context,
+                                @NonNull final CustomEventNativeListener customEventNativeListener,
+                                @NonNull final Map<String, Object> localExtras,
+                                @NonNull final Map<String, String> serverExtras) {
 
         final String placementId;
         if (extrasAreValid(serverExtras)) {
@@ -107,11 +107,11 @@ public class FacebookNative extends CustomEventNative {
      * @param videoRendererAvailable Whether or not there is a renderer available for video-enabled
      *                               Facebook native ads.
      */
-    public static void setVideoRendererAvailable(final boolean videoRendererAvailable) {
+    private static void setVideoRendererAvailable(final boolean videoRendererAvailable) {
         sIsVideoRendererAvailable = videoRendererAvailable;
     }
 
-    static boolean shouldUseVideoEnabledNativeAd(final boolean isVideoRendererAvailable,
+    private static boolean shouldUseVideoEnabledNativeAd(final boolean isVideoRendererAvailable,
                                                  final String videoEnabledString, final boolean videoEnabledFromServer) {
         if (!isVideoRendererAvailable) {
             return false;
@@ -129,7 +129,7 @@ public class FacebookNative extends CustomEventNative {
         return (placementId != null && placementId.length() > 0);
     }
 
-    static class FacebookStaticNativeAd extends StaticNativeAd implements AdListener, ImpressionListener {
+    static class FacebookStaticNativeAd extends StaticNativeAd implements AdListener {
         private static final String SOCIAL_CONTEXT_FOR_AD = "socialContextForAd";
 
         private final Context mContext;
@@ -146,7 +146,6 @@ public class FacebookNative extends CustomEventNative {
 
         void loadAd() {
             mNativeAd.setAdListener(this);
-            mNativeAd.setImpressionListener(this);
             mNativeAd.loadAd();
         }
 
@@ -256,7 +255,7 @@ public class FacebookNative extends CustomEventNative {
     }
 
 
-    static class FacebookVideoEnabledNativeAd extends BaseNativeAd implements AdListener, ImpressionListener {
+    static class FacebookVideoEnabledNativeAd extends BaseNativeAd implements AdListener {
         private static final String SOCIAL_CONTEXT_FOR_AD = "socialContextForAd";
 
         static final double MIN_STAR_RATING = 0;
@@ -281,7 +280,6 @@ public class FacebookNative extends CustomEventNative {
 
         void loadAd() {
             mNativeAd.setAdListener(this);
-            mNativeAd.setImpressionListener(this);
             mNativeAd.loadAd();
         }
 

@@ -12,8 +12,6 @@ import com.deeppandya.appmanager.util.FirebaseRemoteConfigJob;
 import com.evernote.android.job.JobManager;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.FirebaseApp;
-import com.orm.SugarApp;
-import com.orm.SugarContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,6 @@ public class AppManager extends MultiDexApplication {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 
-        SugarContext.init(this);
         FirebaseApp.initializeApp(this);
         // init job scheduler
         JobManager.create(this).addJobCreator(new FirebaseRemoteConfigJob());

@@ -16,7 +16,7 @@
             android:layout_height="?android:actionBarSize"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:tabTextAppearance="?android:attr/textAppearanceMedium"
-            app:tabTextColor="@color/finestWhite"
+            app:tabTextColor="@color/white"
             app:tabGravity="fill" />
 
     </android.support.design.widget.AppBarLayout>
