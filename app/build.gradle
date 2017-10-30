@@ -100,10 +100,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
     compile 'org.jokar:permissiondispatcher:2.0.8'
 
-    compile('com.mopub:mopub-sdk:4.9.0@aar') {
-        transitive = true
-    }
-
     compile 'com.facebook.android:facebook-android-sdk:4.27.0'
     compile 'com.facebook.android:audience-network-sdk:4.26.1'
 

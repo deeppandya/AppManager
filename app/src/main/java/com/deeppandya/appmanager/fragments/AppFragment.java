@@ -45,11 +45,6 @@ import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.receiver.PackageChangeReceiver;
 import com.deeppandya.appmanager.util.CommonFunctions;
 import com.deeppandya.appmanager.util.FileListSorter;
-import com.mopub.nativeads.MoPubNativeAdLoadedListener;
-import com.mopub.nativeads.MoPubNativeAdPositioning;
-import com.mopub.nativeads.MoPubRecyclerAdapter;
-import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
-import com.mopub.nativeads.ViewBinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -183,39 +178,12 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
 
     }
 
-    private void setAdAdapter() {
-        MoPubRecyclerAdapter myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), mAdapter,new MoPubNativeAdPositioning.MoPubServerPositioning());
-        // Create an ad renderer and view binder that describe your native ad layout.
-        ViewBinder myViewBinder = new ViewBinder.Builder(R.layout.app_ad)
-                .titleId(R.id.native_ad_title)
-                .textId(R.id.native_ad_body)
-                .iconImageId(R.id.native_ad_icon)
-                .callToActionId(R.id.native_ad_icon)
-                .build();
-
-        MoPubStaticNativeAdRenderer myRenderer = new MoPubStaticNativeAdRenderer(myViewBinder);
-
-        myMoPubAdapter.registerAdRenderer(myRenderer);
-        myMoPubAdapter.loadAds("493437314eae4f36a307db56502e9cb5");
-        myMoPubAdapter.setAdLoadedListener(new MoPubNativeAdLoadedListener() {
-            @Override
-            public void onAdLoaded(int position) {
-                Log.e(TAG,"AdPosition");
-            }
-
-            @Override
-            public void onAdRemoved(int position) {
-
-            }
-        });
-    }
-
     private boolean isUserApp() {
-        return (appType != null && appType.equals(AppType.USERAPP.toString())) ? true : false;
+        return appType != null && appType.equals(AppType.USERAPP.toString());
     }
 
     private boolean isSystemApp() {
-        return (appType != null && appType.equals(AppType.SYSTEMAPP.toString())) ? true : false;
+        return appType != null && appType.equals(AppType.SYSTEMAPP.toString());
     }
 
     private void setHintLayout() {
