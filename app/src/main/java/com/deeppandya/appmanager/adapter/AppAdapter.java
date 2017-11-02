@@ -1,5 +1,6 @@
 package com.deeppandya.appmanager.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,14 +57,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         this.context = context;
         this.getAppsView = getAppsView;
         selectedItems = new ArrayList<>();
-        appModelBackUpList = new ArrayList<AppModel>();
+        appModelBackUpList = new ArrayList<>();
     }
 
     public void setAppCategory(AppCategory appCategory) {
         this.appCategory = appCategory;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView appIcon;
         TextView txtAppName;
         LinearLayout appLayout;
@@ -71,17 +72,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         ImageButton appProperties;
         Button btnUninstall, btnBackup, btnPermission, btnPackage;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
-            txtAppName = (TextView) view.findViewById(R.id.app_name);
-            appIcon = (ImageView) view.findViewById(R.id.app_icon);
-            appLayout = (LinearLayout) view.findViewById(R.id.app_layout);
-            txtAppDesc = (TextView) view.findViewById(R.id.app_desc);
-            appProperties = (ImageButton) view.findViewById(R.id.app_properties);
+            txtAppName = view.findViewById(R.id.app_name);
+            appIcon = view.findViewById(R.id.app_icon);
+            appLayout = view.findViewById(R.id.app_layout);
+            txtAppDesc = view.findViewById(R.id.app_desc);
+            appProperties = view.findViewById(R.id.app_properties);
 
-            btnUninstall = (Button) view.findViewById(R.id.btnUninstall);
-            btnBackup = (Button) view.findViewById(R.id.btnBackup);
-            btnPermission = (Button) view.findViewById(R.id.btnPermission);
+            btnUninstall = view.findViewById(R.id.btnUninstall);
+            btnBackup = view.findViewById(R.id.btnBackup);
+            btnPermission = view.findViewById(R.id.btnPermission);
 
         }
     }
@@ -94,16 +95,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         return new ViewHolder(itemView);
     }
 
+    @SuppressLint("StringFormatMatches")
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.appIcon.setImageDrawable(appList.get(position).getAppIcon());
-        holder.txtAppName.setText(appList.get(position).getAppName());
+        holder.appIcon.setImageDrawable(appList.get(holder.getAdapterPosition()).getAppIcon());
+        holder.txtAppName.setText(appList.get(holder.getAdapterPosition()).getAppName());
 
         if (appSortType == AppSortType.BYDATE) {
-            holder.txtAppDesc.setText(appList.get(position).getFormattedDate());
+            holder.txtAppDesc.setText(appList.get(holder.getAdapterPosition()).getFormattedDate());
         } else {
-            holder.txtAppDesc.setText(appList.get(position).getSize());
+            holder.txtAppDesc.setText(appList.get(holder.getAdapterPosition()).getSize());
         }
 
 
@@ -111,17 +113,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
             holder.appProperties.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showPopup(v, appList.get(position));
+                    showPopup(v, appList.get(holder.getAdapterPosition()));
                 }
             });
         }
 
         if (appCategory == AppCategory.UNINSTALL) {
-            if (selectedItems.contains(appList.get(position))) {
+            if (selectedItems.contains(appList.get(holder.getAdapterPosition()))) {
                 holder.appLayout.setActivated(true);
                 holder.btnUninstall.setVisibility(View.GONE);
                 holder.appProperties.setVisibility(View.GONE);
-            } else if (appList.get(position).getAppType() == AppType.SYSTEMAPP) {
+            } else if (appList.get(holder.getAdapterPosition()).getAppType() == AppType.SYSTEMAPP) {
                 holder.btnUninstall.setVisibility(View.GONE);
             } else {
                 holder.appLayout.setActivated(false);
@@ -130,12 +132,12 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnUninstall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CommonFunctions.uninstallApp(context, appList.get(position));
+                        CommonFunctions.uninstallApp(context, appList.get(holder.getAdapterPosition()));
                     }
                 });
             }
         } else if (appCategory == AppCategory.BACKUP) {
-            if (selectedItems.contains(appList.get(position))) {
+            if (selectedItems.contains(appList.get(holder.getAdapterPosition()))) {
                 holder.appLayout.setActivated(true);
                 holder.btnBackup.setVisibility(View.GONE);
                 holder.appProperties.setVisibility(View.GONE);
@@ -147,30 +149,30 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         appModelBackUpList.clear();
-                        appModelBackUpList.add(appList.get(position));
+                        appModelBackUpList.add(appList.get(holder.getAdapterPosition()));
                         getAppsView.createAppBackup();
                     }
                 });
             }
         } else if (appCategory == AppCategory.PERMISSIONS) {
             holder.btnPermission.setVisibility(View.VISIBLE);
-            if (appList.get(position).getPermissions() != null && appList.get(position).getPermissions().length > 0) {
+            if (appList.get(holder.getAdapterPosition()).getPermissions() != null && appList.get(holder.getAdapterPosition()).getPermissions().length > 0) {
                 holder.btnPermission.setText(context.getResources().getString(R.string.permission));
                 holder.btnPermission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //showPermissions(appList.get(position));
+                        //showPermissions(appList.get(holder.getAdapterPosition()));
 
-                        String[] permissions = new String[appList.get(position).getPermissions().length];
-                        for (int i = 0; i < appList.get(position).getPermissions().length; i++) {
-                            permissions[i] = (appList.get(position).getPermissions()[i]).toString();
+                        String[] permissions = new String[appList.get(holder.getAdapterPosition()).getPermissions().length];
+                        for (int i = 0; i < appList.get(holder.getAdapterPosition()).getPermissions().length; i++) {
+                            permissions[i] = (appList.get(holder.getAdapterPosition()).getPermissions()[i]).toString();
                         }
 
                         Intent intent = new Intent(context, PermissionsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("permissions", permissions);
-                        intent.putExtra("appName", appList.get(position).getAppName());
-                        intent.putExtra("packageName", appList.get(position).getPackageName());
+                        intent.putExtra("appName", appList.get(holder.getAdapterPosition()).getAppName());
+                        intent.putExtra("packageName", appList.get(holder.getAdapterPosition()).getPackageName());
                         context.startActivity(intent);
                     }
                 });
@@ -179,13 +181,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
                 holder.btnPermission.setOnClickListener(null);
             }
 
-            if (appList.get(position).getPermissions() != null && appList.get(position).getPermissions().length > 0)
-                holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), appList.get(position).getPermissions().length));
+            if (appList.get(holder.getAdapterPosition()).getPermissions() != null && appList.get(holder.getAdapterPosition()).getPermissions().length > 0)
+                holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), appList.get(holder.getAdapterPosition()).getPermissions().length));
             else
                 holder.txtAppDesc.setText(String.format(context.getResources().getString(R.string.number_of_permissions), 0));
 
         } else if (appCategory == AppCategory.PACKAGE) {
-            holder.txtAppDesc.setText(appList.get(position).getPackageName());
+            holder.txtAppDesc.setText(appList.get(holder.getAdapterPosition()).getPackageName());
         }
     }
 
@@ -253,7 +255,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         this.appList = appList;
     }
 
-    void showPopup(View view, final AppModel appModel) {
+    private void showPopup(View view, final AppModel appModel) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

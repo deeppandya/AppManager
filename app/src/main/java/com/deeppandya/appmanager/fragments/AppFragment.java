@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -16,7 +17,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,7 +80,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_app, container, false);
@@ -101,7 +101,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
 
         setHintLayout();
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
 
         mAdapter = new AppAdapter(getActivity().findViewById(android.R.id.content), getActivity(), this);
 
@@ -127,7 +127,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
             getAppsAsyncTask.cancel(true);
         }
 
-        if (packageChangeReceiver != null) {
+        if (packageChangeReceiver != null && getActivity()!=null && isAdded()) {
             getActivity().unregisterReceiver(packageChangeReceiver);
         }
 
@@ -145,7 +145,9 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         inflater.inflate(R.menu.apps_menu, menu);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        if (searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
         searchView.setOnQueryTextListener(this);
     }
 
@@ -198,7 +200,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
             hintLayout.setVisibility(View.GONE);
         }
 
-        ImageView btnClose = (ImageView) rootView.findViewById(R.id.btnHintCancel);
+        ImageView btnClose = rootView.findViewById(R.id.btnHintCancel);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,12 +308,14 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
             }
         };
 
-        CommonFunctions.setApps(getActivity(),getAppsListener);
+        getAppsAsyncTask = new GetAppsAsyncTask(getActivity(), getAppsListener);
+        getAppsAsyncTask.execute();
     }
 
     @Override
     public void registerReceiver(BroadcastReceiver packageReceiver, IntentFilter filter) {
-        getActivity().registerReceiver(packageReceiver, filter);
+        if (getActivity() != null && isAdded())
+            getActivity().registerReceiver(packageReceiver, filter);
     }
 
     private void showSortDialog(final AppSortListener appSortListener) {

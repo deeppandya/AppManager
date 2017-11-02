@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.activities.IntroActivity;
 import com.deeppandya.appmanager.asynctask.CopyFileAsynctask;
-import com.deeppandya.appmanager.asynctask.GetAppsAsyncTask;
-import com.deeppandya.appmanager.listeners.GetAppsListener;
 import com.deeppandya.appmanager.model.AppModel;
 
 import java.io.File;
@@ -59,10 +56,7 @@ public class CommonFunctions {
         Intent intent = new Intent(
                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + appPackageName));
-        if (intent != null || context != null)
-            context.startActivity(intent);
-        else
-            Toast.makeText(context, context.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
+        context.startActivity(intent);
     }
 
     public static void openAppInPlayStore(Context context, AppModel appModel) {
@@ -113,8 +107,8 @@ public class CommonFunctions {
         activity.startActivity(sendIntent);
     }
 
-    public static void openWebView(Context context, String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    public static void openWebView(Context context) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/app-manager-7b1bf.appspot.com/o/PrivacyPolicy.pdf?alt=media&token=1cc45b77-9fbc-4587-a70b-b23c494f1709"));
         context.startActivity(browserIntent);
     }
 
@@ -123,10 +117,5 @@ public class CommonFunctions {
         introIntent.putExtra("isHelp", isHelp);
         activity.startActivity(introIntent);
         activity.overridePendingTransition(0, 0);
-    }
-
-    public static void setApps(Context context, GetAppsListener getAppsListener) {
-        GetAppsAsyncTask getAppsAsyncTask = new GetAppsAsyncTask(context, getAppsListener);
-        getAppsAsyncTask.execute();
     }
 }

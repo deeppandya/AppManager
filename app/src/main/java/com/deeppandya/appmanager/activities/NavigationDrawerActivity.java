@@ -20,7 +20,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -45,8 +44,6 @@ public class NavigationDrawerActivity extends AdsActivity
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private View navHeader;
-    private LinearLayout imgRate, imgAppOfTheDay, imgOfferWall;
     private Handler mHandler;
     private AdService appBrainAds;
 
@@ -61,18 +58,18 @@ public class NavigationDrawerActivity extends AdsActivity
         appBrainAds = AppBrain.getAds();
 
         setContentView(R.layout.activity_navigation_drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mHandler = new Handler();
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         setNavigationHeader();
@@ -122,7 +119,7 @@ public class NavigationDrawerActivity extends AdsActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == RuntimePermissionManager.PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadAppBackUpManagerFragment();
@@ -198,21 +195,21 @@ public class NavigationDrawerActivity extends AdsActivity
 
     private void setToolbarTitle(AppCategory appCategory) {
         if (appCategory == AppCategory.UNINSTALL) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.uninstall_manager));
+            if(getSupportActionBar()!=null) getSupportActionBar().setTitle(getResources().getString(R.string.uninstall_manager));
         } else if (appCategory == AppCategory.BACKUP) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.backup_manager));
+            if(getSupportActionBar()!=null) getSupportActionBar().setTitle(getResources().getString(R.string.backup_manager));
         } else if (appCategory == AppCategory.PERMISSIONS) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.permission_manager));
+            if(getSupportActionBar()!=null) getSupportActionBar().setTitle(getResources().getString(R.string.permission_manager));
         } else if (appCategory == AppCategory.PACKAGE) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.package_manager));
+            if(getSupportActionBar()!=null) getSupportActionBar().setTitle(getResources().getString(R.string.package_manager));
         } else if (appCategory == AppCategory.BACKEDUP) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.backed_up_apps));
+            if(getSupportActionBar()!=null) getSupportActionBar().setTitle(getResources().getString(R.string.backed_up_apps));
         }
     }
 
     private void setNavigationHeader() {
-        navHeader = navigationView.getHeaderView(0);
-        imgRate = (LinearLayout) navHeader.findViewById(R.id.img_rate);
+        View navHeader = navigationView.getHeaderView(0);
+        LinearLayout imgRate = navHeader.findViewById(R.id.img_rate);
         imgRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,7 +219,7 @@ public class NavigationDrawerActivity extends AdsActivity
             }
         });
 
-        imgAppOfTheDay = (LinearLayout) navHeader.findViewById(R.id.img_app_of_day);
+        LinearLayout imgAppOfTheDay = navHeader.findViewById(R.id.img_app_of_day);
         imgAppOfTheDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,7 +228,7 @@ public class NavigationDrawerActivity extends AdsActivity
             }
         });
 
-        imgOfferWall = (LinearLayout) navHeader.findViewById(R.id.img_offer_wall);
+        LinearLayout imgOfferWall = navHeader.findViewById(R.id.img_offer_wall);
         imgOfferWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,10 +252,7 @@ public class NavigationDrawerActivity extends AdsActivity
             }
         };
 
-        // If mPendingRunnable is not null, then add to the message queue
-        if (mPendingRunnable != null) {
-            mHandler.post(mPendingRunnable);
-        }
+        mHandler.post(mPendingRunnable);
 
         //Closing drawer on item click
         drawer.closeDrawers();
@@ -269,7 +263,7 @@ public class NavigationDrawerActivity extends AdsActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -279,7 +273,7 @@ public class NavigationDrawerActivity extends AdsActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -304,44 +298,41 @@ public class NavigationDrawerActivity extends AdsActivity
         else if (id == R.id.nav_share) {
             CommonFunctions.shareApp(NavigationDrawerActivity.this, getResources().getString(R.string.app_name), getPackageName());
         } else if (id == R.id.nav_feedback) {
-            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feedback_subject), getResources().getString(R.string.title_send_feedback));
             Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
             intent.putExtra("action", IssueReporterActivity.FEEDBACK);
             startActivity(intent);
         } else if (id == R.id.nav_feature_request) {
-            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_feature_request_subject), getResources().getString(R.string.title_send_feature_request));
             Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
             intent.putExtra("action", IssueReporterActivity.FEATUREREQUEST);
             startActivity(intent);
         } else if (id == R.id.nav_bug_report) {
-            //CommonFunctions.sendMessageToDev(NavigationDrawerActivity.this, getResources().getString(R.string.mail_bug_report_subject), getResources().getString(R.string.title_send_bug_report));
             Intent intent = new Intent(NavigationDrawerActivity.this, IssueReporterActivity.class);
             intent.putExtra("action", IssueReporterActivity.BUGREPORT);
             startActivity(intent);
         } else if (id == R.id.nav_help) {
             CommonFunctions.openIntro(NavigationDrawerActivity.this, true);
         } else if (id == R.id.nav_privacy_policy) {
-            CommonFunctions.openWebView(NavigationDrawerActivity.this, "https://firebasestorage.googleapis.com/v0/b/app-manager-7b1bf.appspot.com/o/PrivacyPolicy.pdf?alt=media&token=1cc45b77-9fbc-4587-a70b-b23c494f1709");
+            CommonFunctions.openWebView(NavigationDrawerActivity.this);
         } else if (id == R.id.nav_about) {
             openAboutDialog();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void loadAppBackedUpManagerFragment() {
-
-        Fragment fragment = new AppBackedUpFragment();
-        setToolbarTitle(AppCategory.BACKUP);
-
-        loadFragment(fragment);
-    }
+//    private void loadAppBackedUpManagerFragment() {
+//
+//        Fragment fragment = new AppBackedUpFragment();
+//        setToolbarTitle(AppCategory.BACKUP);
+//
+//        loadFragment(fragment);
+//    }
 
     private void openAboutDialog() {
 
-        PackageInfo pInfo = null;
+        PackageInfo pInfo;
         String version = null;
 
         try {

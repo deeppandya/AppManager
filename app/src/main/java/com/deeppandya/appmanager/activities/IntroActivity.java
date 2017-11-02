@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,10 +19,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.managers.PersistanceManager;
-import com.google.android.gms.ads.InterstitialAd;
 
 public class IntroActivity extends AdsActivity {
 
@@ -47,15 +46,9 @@ public class IntroActivity extends AdsActivity {
     ImageView zero, one, two, three;
     ImageView[] indicators;
 
-    int lastLeftValue = 0;
-
     CoordinatorLayout mCoordinator;
 
-
-    static final String TAG = "IntroActivity";
-
     int page = 0;   //  to track page position
-    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +72,7 @@ public class IntroActivity extends AdsActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
+        mNextBtn = findViewById(R.id.intro_btn_next);
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
 //            mNextBtn.setImageDrawable(
 //                    CommonFunctions.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE)
@@ -87,21 +80,21 @@ public class IntroActivity extends AdsActivity {
 
             mNextBtn.setImageResource(R.drawable.ic_chevron_right_24dp);
 
-        mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
-        mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
+        mSkipBtn = findViewById(R.id.intro_btn_skip);
+        mFinishBtn = findViewById(R.id.intro_btn_finish);
 
-        zero = (ImageView) findViewById(R.id.intro_indicator_0);
-        one = (ImageView) findViewById(R.id.intro_indicator_1);
-        two = (ImageView) findViewById(R.id.intro_indicator_2);
-        three = (ImageView) findViewById(R.id.intro_indicator_3);
+        zero = findViewById(R.id.intro_indicator_0);
+        one = findViewById(R.id.intro_indicator_1);
+        two = findViewById(R.id.intro_indicator_2);
+        three = findViewById(R.id.intro_indicator_3);
 
-        mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
+        mCoordinator = findViewById(R.id.main_content);
 
 
         indicators = new ImageView[]{zero, one, two, three};
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mViewPager.setCurrentItem(page);
@@ -244,13 +237,13 @@ public class IntroActivity extends AdsActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_pager_item, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            TextView sectionTxt = (TextView) rootView.findViewById(R.id.section_text);
+            TextView textView = rootView.findViewById(R.id.section_label);
+            TextView sectionTxt = rootView.findViewById(R.id.section_text);
 
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+            if (getArguments()!=null && getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 textView.setText(getString(R.string.app_uninstall_manager));
                 //CharSequence bulletedList = BulletTextUtil.getBulletList("Features",new String[]{ "List all installed app", "Search app","Remove/delete/uninstall app","Sort by size/name/installed date","Long press on app to uninstall multiple apps at the same time"});
                 sectionTxt.setText(getResources().getString(R.string.app_uninstall_msg));
@@ -265,7 +258,7 @@ public class IntroActivity extends AdsActivity {
                 sectionTxt.setText(getString(R.string.package_msg));
             }
 
-            img = (ImageView) rootView.findViewById(R.id.section_img);
+            img = rootView.findViewById(R.id.section_img);
             img.setImageResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
 
 
@@ -282,7 +275,7 @@ public class IntroActivity extends AdsActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -313,8 +306,5 @@ public class IntroActivity extends AdsActivity {
             }
             return null;
         }
-
     }
-
-
 }

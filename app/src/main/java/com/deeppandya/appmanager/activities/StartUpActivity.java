@@ -24,8 +24,6 @@ public class StartUpActivity extends AdsActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //MobileAds.initialize(getApplicationContext(), FirebaseManager.getRemoteConfig().getString(FirebaseManager.ADMOMB_APP_ID));
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         setContentView(R.layout.activity_startup);
@@ -63,7 +61,8 @@ public class StartUpActivity extends AdsActivity {
             }
         };
 
-        CommonFunctions.setApps(StartUpActivity.this,getAppsListener);
+        getAppsAsyncTask = new GetAppsAsyncTask(StartUpActivity.this, getAppsListener);
+        getAppsAsyncTask.execute();
 
     }
 

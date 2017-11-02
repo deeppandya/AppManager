@@ -12,6 +12,7 @@ import com.deeppandya.appmanager.util.FirebaseRemoteConfigJob;
 import com.evernote.android.job.JobManager;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.FirebaseApp;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,20 @@ import io.fabric.sdk.android.Fabric;
  */
 
 public class AppManager extends MultiDexApplication {
-
-    private static Context mContext;
     public static List<AppModel> apps=new ArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+        // Normal app init code...
+
         Fabric.with(this, new Crashlytics());
 
         FirebaseApp.initializeApp(this);
@@ -53,10 +61,6 @@ public class AppManager extends MultiDexApplication {
     @Override
     public void onTerminate() {
         super.onTerminate();
-    }
-
-    public static synchronized Context getAppContext() {
-        return mContext;
     }
 
 }

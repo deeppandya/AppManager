@@ -1,11 +1,6 @@
 package com.deeppandya.appmanager.activities;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -24,8 +19,6 @@ import com.deeppandya.appmanager.model.DeviceInfo;
 import com.deeppandya.appmanager.util.FirebaseUtil;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
-import java.lang.ref.WeakReference;
-
 import static android.util.Patterns.EMAIL_ADDRESS;
 
 /**
@@ -39,7 +32,6 @@ public class IssueReporterActivity extends AppCompatActivity {
     public static final int FEATUREREQUEST = 1;
     public static final int BUGREPORT = 2;
 
-    private int bodyMinChar = 0;
     private TextInputEditText inputTitle;
     private TextInputEditText inputDescription;
     private TextInputEditText inputEmail;
@@ -67,14 +59,14 @@ public class IssueReporterActivity extends AppCompatActivity {
 
     private void findViews() {
 
-        inputTitle = (TextInputEditText) findViewById(R.id.air_inputTitle);
-        inputDescription = (TextInputEditText) findViewById(R.id.air_inputDescription);
-        inputEmail = (TextInputEditText) findViewById(R.id.air_inputEmail);
-        textDeviceInfo = (TextView) findViewById(R.id.air_textDeviceInfo);
-        buttonDeviceInfo = (ImageButton) findViewById(R.id.air_buttonDeviceInfo);
-        layoutDeviceInfo = (ExpandableRelativeLayout) findViewById(R.id.air_layoutDeviceInfo);
+        inputTitle = findViewById(R.id.air_inputTitle);
+        inputDescription = findViewById(R.id.air_inputDescription);
+        inputEmail = findViewById(R.id.air_inputEmail);
+        textDeviceInfo = findViewById(R.id.air_textDeviceInfo);
+        buttonDeviceInfo = findViewById(R.id.air_buttonDeviceInfo);
+        layoutDeviceInfo = findViewById(R.id.air_layoutDeviceInfo);
 
-        buttonSend = (FloatingActionButton) findViewById(R.id.air_buttonSend);
+        buttonSend = findViewById(R.id.air_buttonSend);
     }
 
     private void initViews() {
@@ -98,12 +90,12 @@ public class IssueReporterActivity extends AppCompatActivity {
             }
         });
 
-        if(getIntent()!=null && getIntent().getIntExtra("action",-1)!=-1){
-            if(getIntent().getIntExtra("action",-1)==FEEDBACK){
+        if (getIntent() != null && getIntent().getIntExtra("action", -1) != -1) {
+            if (getIntent().getIntExtra("action", -1) == FEEDBACK) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.title_send_feedback));
-            }else if(getIntent().getIntExtra("action",-1)==FEATUREREQUEST){
+            } else if (getIntent().getIntExtra("action", -1) == FEATUREREQUEST) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.title_send_feature_request));
-            }else if(getIntent().getIntExtra("action",-1)==BUGREPORT){
+            } else if (getIntent().getIntExtra("action", -1) == BUGREPORT) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.title_send_bug_report));
             }
         }
@@ -124,18 +116,18 @@ public class IssueReporterActivity extends AppCompatActivity {
 
         if (!validateInput()) return;
 
-        String databaseName="";
-        if(getIntent()!=null && getIntent().getIntExtra("action",-1)!=-1){
-            if(getIntent().getIntExtra("action",-1)==FEEDBACK){
-                databaseName="user_feedback";
-            }else if(getIntent().getIntExtra("action",-1)==FEATUREREQUEST){
-                databaseName="user_feature_request";
-            }else if(getIntent().getIntExtra("action",-1)==BUGREPORT){
-                databaseName="user_bug_report";
+        String databaseName = "";
+        if (getIntent() != null && getIntent().getIntExtra("action", -1) != -1) {
+            if (getIntent().getIntExtra("action", -1) == FEEDBACK) {
+                databaseName = "user_feedback";
+            } else if (getIntent().getIntExtra("action", -1) == FEATUREREQUEST) {
+                databaseName = "user_feature_request";
+            } else if (getIntent().getIntExtra("action", -1) == BUGREPORT) {
+                databaseName = "user_bug_report";
             }
         }
 
-        FirebaseUtil.saveBugReportToFirebase(databaseName,inputTitle.getText().toString(),inputDescription.getText().toString(),inputEmail.getText().toString(),deviceInfo.toMarkdown());
+        FirebaseUtil.saveBugReportToFirebase(databaseName, inputTitle.getText().toString(), inputDescription.getText().toString(), inputEmail.getText().toString(), deviceInfo.toMarkdown());
 
         finish();
 
@@ -155,15 +147,13 @@ public class IssueReporterActivity extends AppCompatActivity {
             setError(inputDescription, R.string.air_error_no_description);
             hasErrors = true;
         } else {
-            if (bodyMinChar > 0) {
-                if (inputDescription.getText().toString().length() < bodyMinChar) {
-                    setError(inputDescription, getResources().getQuantityString(R.plurals.air_error_short_description, bodyMinChar, bodyMinChar));
-                    hasErrors = true;
-                } else {
-                    removeError(inputDescription);
-                }
-            } else
+            int bodyMinChar = 0;
+            if (inputDescription.getText().toString().length() < bodyMinChar) {
+                setError(inputDescription, getResources().getQuantityString(R.plurals.air_error_short_description, bodyMinChar, bodyMinChar));
+                hasErrors = true;
+            } else {
                 removeError(inputDescription);
+            }
         }
 
         if (!TextUtils.isEmpty(inputEmail.getText()) &&
@@ -212,81 +202,4 @@ public class IssueReporterActivity extends AppCompatActivity {
             Log.e(TAG, "Issue while removing error UI.", e);
         }
     }
-
-    protected final void setMinimumDescriptionLength(int length) {
-        this.bodyMinChar = length;
-    }
-
-    private static abstract class DialogAsyncTask<Pa, Pr, Re> extends AsyncTask<Pa, Pr, Re> {
-        private WeakReference<Context> contextWeakReference;
-        private WeakReference<Dialog> dialogWeakReference;
-
-        private boolean supposedToBeDismissed;
-
-        private DialogAsyncTask(Context context) {
-            contextWeakReference = new WeakReference<>(context);
-            dialogWeakReference = new WeakReference<>(null);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Context context = getContext();
-            if (!supposedToBeDismissed && context != null) {
-                Dialog dialog = createDialog(context);
-                dialogWeakReference = new WeakReference<>(dialog);
-                dialog.show();
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected final void onProgressUpdate(Pr... values) {
-            super.onProgressUpdate(values);
-            Dialog dialog = getDialog();
-            if (dialog != null) {
-                onProgressUpdate(dialog, values);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private void onProgressUpdate(@NonNull Dialog dialog, Pr... values) {
-        }
-
-        @Nullable
-        Context getContext() {
-            return contextWeakReference.get();
-        }
-
-        @Nullable
-        Dialog getDialog() {
-            return dialogWeakReference.get();
-        }
-
-        @Override
-        protected void onCancelled(Re result) {
-            super.onCancelled(result);
-            tryToDismiss();
-        }
-
-        @Override
-        protected void onPostExecute(Re result) {
-            super.onPostExecute(result);
-            tryToDismiss();
-        }
-
-        private void tryToDismiss() {
-            supposedToBeDismissed = true;
-            try {
-                Dialog dialog = getDialog();
-                if (dialog != null)
-                    dialog.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        protected abstract Dialog createDialog(@NonNull Context context);
-    }
-
 }

@@ -2,8 +2,6 @@ package com.deeppandya.appmanager.activities;
 
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,7 +15,6 @@ import com.deeppandya.appmanager.R;
 import com.deeppandya.appmanager.adapter.PermissionsAdapter;
 import com.deeppandya.appmanager.managers.PermissionGroupsManager;
 import com.deeppandya.appmanager.managers.PermissionsWithoutGroupsManager;
-import com.deeppandya.appmanager.model.AppModel;
 import com.deeppandya.appmanager.model.PermissionModel;
 import com.deeppandya.appmanager.util.CommonFunctions;
 
@@ -36,14 +33,14 @@ public class PermissionsActivity extends AdsActivity {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
         mAdapter = new PermissionsAdapter(PermissionsActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        Button btnGotoSettings = (Button) findViewById(R.id.btnGoToSettings);
+        Button btnGotoSettings = findViewById(R.id.btnGoToSettings);
         btnGotoSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,8 +49,10 @@ public class PermissionsActivity extends AdsActivity {
             }
         });
 
-        getSupportActionBar().setTitle(getAppName());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(getAppName());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         setPermissionData();
     }
@@ -86,7 +85,7 @@ public class PermissionsActivity extends AdsActivity {
                         permissionModel.setGroupText(PermissionGroupsManager.getPermissionGroups().get(pinfo.group).first);
                         permissionModel.setPermissionText(pinfo.loadLabel(getPackageManager()).toString());
                         permissionModel.setPermissionIcon(PermissionGroupsManager.getPermissionGroups().get(pinfo.group).second);
-                    } else if (PermissionsWithoutGroupsManager.getPermissionWithoutGroups().get(permission)!=null) {
+                    } else if (PermissionsWithoutGroupsManager.getPermissionWithoutGroups().get(permission) != null) {
                         String[] group = permission.split("\\.");
                         String groupText = (group[group.length - 1]).replace("_", " ");
 
