@@ -1,6 +1,8 @@
 package com.deeppandya.appmanager.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,9 +27,8 @@ import java.util.List;
 
 public class CommonFunctions {
 
+    @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
-
-    private static int REQUEST_INVITE = 2;
 
     public static String getdate(long f, String year) {
         String date = sSDF.format(f);
@@ -36,6 +37,7 @@ public class CommonFunctions {
         return date;
     }
 
+    @SuppressLint("DefaultLocale")
     public static String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";
@@ -53,9 +55,16 @@ public class CommonFunctions {
     }
 
     public static void openAppProperties(Context context, String appPackageName) {
-        Intent intent = new Intent(
-                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:" + appPackageName));
+//        Intent intent = new Intent(
+//                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+//                Uri.parse("package:" + appPackageName));
+        ComponentName componetName = new ComponentName(
+                "com.android.settings",
+                "com.android.settings.applications.InstalledAppDetails");
+        Intent intent = new Intent();
+        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(Uri.parse("package:" + appPackageName));
+        intent.setComponent(componetName);
         context.startActivity(intent);
     }
 
@@ -89,9 +98,11 @@ public class CommonFunctions {
             File outFile = new File(destDir + File.separator + appModel.getAppName() + "_" + appModel.getSymlink() + ".apk");
 
             try {
-                outFile.createNewFile();
-                CopyFileAsynctask copyFilesAsynctask = new CopyFileAsynctask(view, context, inputFile, outFile, appModel.getAppName());
-                copyFilesAsynctask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                boolean isCreated = outFile.createNewFile();
+                if (isCreated) {
+                    CopyFileAsynctask copyFilesAsynctask = new CopyFileAsynctask(view, context, inputFile, outFile, appModel.getAppName());
+                    copyFilesAsynctask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

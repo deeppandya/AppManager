@@ -29,11 +29,9 @@
     <string name="backup_manager">APK Backup manager</string>
     <string name="permission_manager">Permissions manager</string>
     <string name="package_manager">App package manager</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="permission_desc">Permission details</string>
     <string name="no_permission">No permissions</string>
-    <string name="beware_unregistering_device_admin">Warning: If this option is deactivated, anyone can uninstall App manager and access all apps.</string>
-    <string name="add_admin_extra_app_text">Activate this option to allow Hexlock to ask for a passcode if a user tries to uninstall this app.</string>
 
     <!--admob banner adunit ids-->
     <string name="appmanager_firstscreen_banner">ca-app-pub-6103213878258636/2297023300</string>
@@ -100,11 +98,12 @@
     <string name="go_to_settings">Go to settings</string>
     <string name="backed_up_apps">Backed up apps</string>
     <string name="app_backedup_manager">Backed up applications</string>
-    <string name="initializing">Initializating apps...</string>
+    <string name="initializing">Initializating apps…</string>
     <string name="developed_by">Developed by Logiciel Apps</string>
 
     <string name="facebook_app_id">291507681300038</string>
     <string name="not_now">Not Now</string>
     <string name="how_was_your_exp">How was your experience using Application manager?</string>
     <string name="tell_us_what_went_wrong">Tell us what went wrong\nWe\'ll work on it!</string>
+    <string name="search">Search</string>
 </resources>

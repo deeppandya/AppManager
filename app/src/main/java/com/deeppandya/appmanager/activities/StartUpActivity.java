@@ -63,7 +63,6 @@ public class StartUpActivity extends AdsActivity {
 
         getAppsAsyncTask = new GetAppsAsyncTask(StartUpActivity.this, getAppsListener);
         getAppsAsyncTask.execute();
-
     }
 
     @Override

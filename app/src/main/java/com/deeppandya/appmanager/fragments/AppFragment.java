@@ -144,6 +144,7 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
         menu.clear();
         inflater.inflate(R.menu.apps_menu, menu);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView.setQueryHint(getString(R.string.search));
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if (searchManager != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -189,8 +190,8 @@ public class AppFragment extends AdsFragment implements GetAppsView, SearchView.
     }
 
     private void setHintLayout() {
-        TextView txtHint = (TextView) rootView.findViewById(R.id.txtHint);
-        final CardView hintLayout = (CardView) rootView.findViewById(R.id.hint_layout);
+        TextView txtHint = rootView.findViewById(R.id.txtHint);
+        final CardView hintLayout = rootView.findViewById(R.id.hint_layout);
 //        if (appCategory == AppCategory.UNINSTALL) {
 //            txtHint.setText(getResources().getString(R.string.long_press_hint));
 //        }
