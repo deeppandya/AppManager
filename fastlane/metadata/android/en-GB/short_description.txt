@@ -1,0 +1,1 @@
+App Manager is designed to help you better manage your apps on Android devices.

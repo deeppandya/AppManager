@@ -1,0 +1,27 @@
+1. App Uninstall Manager : Perform single or batch uninstall operations for unwanted apps that persistently take up phone memory, reducing the device performance.
+
+Regularly uninstall useless apps is a good habit ,it can save your phone storage , delete useless garbage data , prevent too much useless apps drain your battery , make your phone speed fast.
+
+2. App Backup Manager : App Backup Manager is a handy tool to backup installed application to share with your friends without connecting to the internet.
+
+Save installed app on your phone for future use. Use App Backup Manager to keep a copy of all the app you got so the apps you want are always available for new device.
+
+3. App Permissions Manager : App Permissions Manager is a tool designed to resolve user's concern regarding permissions used by apps.
+
+Do you concern the permission of some apps? 
+App Permissions Manager is a permission management tool designed to resolve your such concern.
+This tool is able to browse permissions of installed apps and show the detail about each permission.
+Keep your mobile secure and private from malicious apps, freely remove the permission you do not trust.
+
+4. App Package Manager : See installed app\'s package name for developers.
+
+Functions
+* Installed application lists
+* View package info
+* Open Play Store from package info
+
+Features:
+1. Easiest and Fast uninstaller - single click on an app to uninstall it.
+2. APK files management
+3. Sort apps by name, last modified date and size with ascending and descending option.
+4. Run, share or check details like permissions of apps with details.

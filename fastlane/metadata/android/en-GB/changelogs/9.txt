@@ -1,0 +1,1 @@
+bug fixes for pre lollipop devices and improved performance.
