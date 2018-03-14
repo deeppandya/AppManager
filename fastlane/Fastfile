@@ -25,12 +25,6 @@ platform :android do
   s = File.read(path)
   version = s[re, 1].to_i
 
-  #Commit Version Code bump
-  git_commit(
-        path: ".",
-        message: "Version Bump to - #{version}"
-      )
-
   #build
     gradle(
         task: 'assemble',
@@ -39,6 +33,12 @@ platform :android do
 
   #release notes
   create_changelog
+
+  #Commit Version Code bump
+    git_commit(
+          path: ".",
+          message: "Version Bump to - #{version} \nUpdated Changelog.txt"
+        )
 
   #Push changes to git remote
   push_to_git_remote
