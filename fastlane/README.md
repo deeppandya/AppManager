@@ -21,11 +21,6 @@ or alternatively using `brew cask install fastlane`
 fastlane android beta
 ```
 Submit a new Beta Build to Google play Beta
-### android test
-```
-fastlane android test
-```
-
 ### android deploy
 ```
 fastlane android deploy

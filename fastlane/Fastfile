@@ -14,7 +14,10 @@ default_platform(:android)
 platform :android do
 
   desc "Submit a new Beta Build to Google play Beta"
-  lane :beta do
+  lane :beta do |options|
+
+  name=options[:name]
+  tag = options[:tag]
 
   #increment Version
   increment_version_code
@@ -26,38 +29,29 @@ platform :android do
   version = s[re, 1].to_i
 
   #build
-    gradle(
-        task: 'assemble',
-        build_type: 'Release'
-      )
+  gradle(
+  task: 'assemble',
+  build_type: 'Release'
+  )
 
   #release notes
   create_changelog
 
   #Commit Version Code bump
-    git_commit(
-          path: ".",
-          message: "Version Bump to - #{version}"
-        )
+  git_commit(
+  path: ".",
+  message: "Version Bump to - #{version}"
+  )
 
   #Push changes to git remote
   push_to_git_remote
 
   #draft release to github
-  #draft_release
+  draft_release(name:name,tag:tag)
 
   #upload
-    upload_to_play_store(track: 'beta')
+  upload_to_play_store(track: 'beta')
   end
-
-  lane :test do
-  path = '../app/build.gradle'
-      re = /versionName\s+(\d+)/
-      s = File.read(path)
-      versionName = s[re, 1].to_i
-
-      puts "VersionName #{versionName}"
-      end
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
@@ -89,11 +83,11 @@ platform :android do
   desc "Draft Release in github"
     private_lane :draft_release do |options|
       release_name = options[:name]
-      tag = options[:tag]
+      tag=options[:tag]
 
       set_github_release(
         repository_name: "deeppandya/AppManager",
-        api_token: "7609b9b587af3e3b5863a90e30fae47b3ef3f492",
+        api_token: "ab6c8dc596aa9d7e85f72fed43b31ad6f9640c8b",
         name: release_name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),

@@ -5,7 +5,17 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.001354">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.001537">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: Switch to android draft_release lane" time="0.001203">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: set_github_release" time="0.198779">
         
       </testcase>
     
