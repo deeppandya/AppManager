@@ -87,7 +87,7 @@ platform :android do
 
       set_github_release(
         repository_name: "deeppandya/AppManager",
-        api_token: "4ae2825d3b90d80abe5431a211c20ddf5fb4934e",
+        api_token: "b4f7e09e7136b405b07885d04a5d6e90cee20483",
         name: release_name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),
