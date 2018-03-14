@@ -37,7 +37,7 @@ platform :android do
   #Commit Version Code bump
     git_commit(
           path: ".",
-          message: "Version Bump to - #{version} \nUpdated Changelog.txt"
+          message: "Version Bump to - #{version}"
         )
 
   #Push changes to git remote
@@ -49,6 +49,15 @@ platform :android do
   #upload
     upload_to_play_store(track: 'beta')
   end
+
+  lane :test do
+  path = '../app/build.gradle'
+      re = /versionName\s+(\d+)/
+      s = File.read(path)
+      versionName = s[re, 1].to_i
+
+      puts "VersionName #{versionName}"
+      end
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
