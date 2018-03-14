@@ -12,17 +12,21 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
-  end
 
   desc "Submit a new Beta Build to Google play Beta"
   lane :beta do
 
+  path = '../app/build.gradle'
+  re = /versionCode\s+(\d+)/
+  s = File.read(path)
+  version = s[re, 1].to_i
+
   #increment Version
   increment_version_code
-  commit_android_version_bump(force:true)
+  git_commit(
+        path: ".",
+        message: "Version Bump - #{version}"
+      )
   push_to_git_remote
 
   #build
@@ -32,7 +36,10 @@ platform :android do
       )
 
   #release notes
-  changelog_from_git_commits
+  create_changelog
+
+  #draft release to github
+  draft_release
 
   #upload
     upload_to_play_store(track: 'beta')
@@ -43,5 +50,42 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
+  desc "Creates Changelog from PR titles and writes to Changelog.txt"
+    desc "Usage:"
+    desc "    fastlane android create_changelog"
+    desc "or"
+    desc "    fastlane android create_changelog since_tag:v1.0.0"
+    private_lane :create_changelog do |options|
+      path = '../app/build.gradle'
+      re = /versionCode\s+(\d+)/
+
+      s = File.read(path)
+      version = s[re, 1].to_i
+      tag = options[:since_tag] || last_git_tag
+      changelog = "What's new in AutoVision #{version}\n\n"
+      changelog += sh "git log --oneline --decorate --merges  --grep=\"^Merge pull\" --format=\"* %s %b\" #{tag}.. | cut -d' ' -f1,5,8-"
+      File.open("../Changelog.txt", "w") { |file| file.write(changelog) }
+      git_commit(
+        path: "Changelog.txt",
+        message: "Update Changelog for #{version}"
+      )
+    end
+
+  desc "Draft Release in github"
+    private_lane :draft_release do |options|
+      release_name = options[:name]
+      tag = options[:tag]
+
+      set_github_release(
+        repository_name: "deeppandya/AppManager",
+        api_token: "7609b9b587af3e3b5863a90e30fae47b3ef3f492",
+        name: release_name,
+        tag_name: tag,
+        description: (File.read("../Changelog.txt") rescue "No changelog provided"),
+        is_draft: true
+      )
+    end
+
 end
 
