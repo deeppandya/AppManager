@@ -44,7 +44,7 @@ platform :android do
   push_to_git_remote
 
   #draft release to github
-  draft_release
+  #draft_release
 
   #upload
     upload_to_play_store(track: 'beta')
