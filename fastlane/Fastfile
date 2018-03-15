@@ -44,14 +44,14 @@ platform :android do
   message: "Version Bump to - #{version}"
   )
 
+  #Push changes to git remote
+  push_to_git_remote
+
   #draft release to github
   draft_release(name:name,tag:tag,is_draft:is_draft)
 
   #upload
   upload_to_play_store(track: 'beta')
-
-  #Push changes to git remote
-  push_to_git_remote
 
   UI.success("Release build #{name} is published on google play beta.")
 
