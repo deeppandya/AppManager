@@ -5,52 +5,52 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.001577">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.001359">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: increment_version_code" time="0.150191">
+      <testcase classname="fastlane.lanes" name="1: increment_version_code" time="0.152439">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: gradle" time="40.053471">
+      <testcase classname="fastlane.lanes" name="2: gradle" time="37.089642">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: Switch to android create_changelog lane" time="0.001513">
+      <testcase classname="fastlane.lanes" name="3: Switch to android create_changelog lane" time="0.001484">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: last_git_tag" time="0.055331">
+      <testcase classname="fastlane.lanes" name="4: last_git_tag" time="0.026978">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: git log --oneline --decorate --merges  --grep=&quot;^Merge pull&quot; --format=&quot;* %s %b&quot; test.. | cut -d' ' -f1,5,8-" time="0.025549">
+      <testcase classname="fastlane.lanes" name="5: git log --oneline --decorate --merges  --grep=&quot;^Merge pull&quot; --format=&quot;* %s %b&quot; test.. | cut -d' ' -f1,5,8-" time="0.017807">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: git_commit" time="0.037855">
+      <testcase classname="fastlane.lanes" name="6: git_commit" time="0.029908">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: git_commit" time="0.030945">
+      <testcase classname="fastlane.lanes" name="7: git_commit" time="0.030175">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="8: Switch to android draft_release lane" time="0.001314">
+      <testcase classname="fastlane.lanes" name="8: Switch to android draft_release lane" time="0.001523">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="9: set_github_release" time="0.225296">
+      <testcase classname="fastlane.lanes" name="9: set_github_release" time="0.188184">
         
           <failure message="/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/actions/actions_helper.rb:48:in `execute_action'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:236:in `block in execute_action'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:231:in `chdir'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:231:in `execute_action'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:157:in `trigger_action_by_name'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/fast_file.rb:148:in `method_missing'&#10;Fastfile:88:in `block (2 levels) in parsing_binding'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:204:in `try_switch_to_lane'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:146:in `trigger_action_by_name'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/fast_file.rb:148:in `method_missing'&#10;Fastfile:47:in `block (2 levels) in parsing_binding'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/lane_manager.rb:57:in `cruise_lane'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/Library/Ruby/Gems/2.3.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/Library/Ruby/Gems/2.3.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/Library/Ruby/Gems/2.3.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:75:in `run!'&#10;/Library/Ruby/Gems/2.3.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/commands_generator.rb:333:in `run'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/commands_generator.rb:42:in `start'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/fastlane/lib/fastlane/cli_tools_distributor.rb:98:in `take_off'&#10;/Library/Ruby/Gems/2.3.0/gems/fastlane-2.85.0/bin/fastlane:20:in `&lt;top (required)&gt;'&#10;/usr/local/bin/fastlane:22:in `load'&#10;/usr/local/bin/fastlane:22:in `&lt;main&gt;'&#10;&#10;Repository deeppandya/AppManager cannot be found, please double check its name and that you provided a valid API token (GITHUB_API_TOKEN)" />
         

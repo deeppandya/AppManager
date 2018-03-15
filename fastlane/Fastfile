@@ -43,11 +43,11 @@ platform :android do
   message: "Version Bump to - #{version}"
   )
 
-  #draft release to github
-  draft_release(name:name,tag:tag)
-
   #Push changes to git remote
   push_to_git_remote
+
+  #draft release to github
+  draft_release(name:name,tag:tag)
 
   #upload
   upload_to_play_store(track: 'beta')
@@ -87,7 +87,7 @@ platform :android do
 
       set_github_release(
         repository_name: "deeppandya/AppManager",
-        api_token: "959a608fa59deb5b79fb367a721493ff93f2544b",
+        api_token: ENV["GITHUB_TOKEN"],
         name: release_name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),
