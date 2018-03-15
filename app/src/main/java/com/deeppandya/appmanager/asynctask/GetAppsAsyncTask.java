@@ -28,9 +28,9 @@ public class GetAppsAsyncTask extends AsyncTask<Void, Integer, List<AppModel>> {
     private GetAppsListener getAppsListener;
     private List<AppModel> mApps;
 
-    public GetAppsAsyncTask(Context context,GetAppsListener getAppsListener) {
+    public GetAppsAsyncTask(Context context, GetAppsListener getAppsListener) {
         this.context = context;
-        this.getAppsListener=getAppsListener;
+        this.getAppsListener = getAppsListener;
         packageManager = context.getPackageManager();
     }
 
@@ -82,9 +82,9 @@ public class GetAppsAsyncTask extends AsyncTask<Void, Integer, List<AppModel>> {
 
     @Override
     protected void onPostExecute(List<AppModel> appModels) {
-        if(appModels!=null && appModels.size()>0){
+        if (appModels != null && appModels.size() > 0) {
             getAppsListener.afterGetApps(appModels);
-        }else{
+        } else {
             getAppsListener.onError();
         }
     }

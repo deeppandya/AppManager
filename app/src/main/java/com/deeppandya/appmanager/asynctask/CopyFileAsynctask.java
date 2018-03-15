@@ -25,7 +25,7 @@ import java.io.IOException;
  */
 
 public class CopyFileAsynctask extends AsyncTask<Void, Integer, Boolean> {
-    ProgressDialog progress;
+    private ProgressDialog progress;
 
     private View view;
     private Context context;
