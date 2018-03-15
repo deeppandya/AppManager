@@ -51,6 +51,7 @@ platform :android do
 
   #upload
   upload_to_play_store(track: 'beta')
+
   end
 
   desc "Deploy a new version to the Google Play"
@@ -87,7 +88,7 @@ platform :android do
 
       set_github_release(
         repository_name: "deeppandya/AppManager",
-        api_token: ENV["GITHUB_TOKEN"],
+        api_token: "375689444f5daf745a9d6e499eb9d145008aad79",
         name: release_name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),
