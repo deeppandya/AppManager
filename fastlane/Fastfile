@@ -16,8 +16,9 @@ platform :android do
   desc "Submit a new Beta Build to Google play Beta"
   lane :beta do
 
-  name = UI.input("What's your Release name? ")
-  tag = UI.input("What's your Github tag? ")
+  name = UI.input("Enter Release name? ")
+  tag = UI.input("Enter Github tag? ")
+  is_draft = UI.input("is this a draft in github?  1.true  2.false")
 
   #increment Version
   increment_version_code
@@ -47,7 +48,7 @@ platform :android do
   push_to_git_remote
 
   #draft release to github
-  draft_release(name:name,tag:tag)
+  draft_release(name:name,tag:tag,is_draft:is_draft)
 
   #upload
   upload_to_play_store(track: 'beta')
@@ -82,16 +83,17 @@ platform :android do
 
   desc "Draft Release in github"
     private_lane :draft_release do |options|
-      release_name = options[:name]
+      name = options[:name]
       tag=options[:tag]
+      is_draft=options[:is_draft]
 
       set_github_release(
         repository_name: "deeppandya/AppManager",
         api_token: ENV["GITHUB_TOKEN"],
-        name: release_name,
+        name: name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),
-        is_draft: false
+        is_draft: is_draft
       )
     end
 
