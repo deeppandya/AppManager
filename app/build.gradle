@@ -34,7 +34,7 @@ android {
         applicationId "com.deeppandya.appmanager"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 31
+        versionCode 32
         versionName "1.0."+versionCode
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -46,7 +46,6 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            //versionNameSuffix ".${gitCommitCount}"
         }
     }
     repositories {
