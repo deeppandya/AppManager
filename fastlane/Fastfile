@@ -14,10 +14,10 @@ default_platform(:android)
 platform :android do
 
   desc "Submit a new Beta Build to Google play Beta"
-  lane :beta do |options|
+  lane :beta do
 
-  name=options[:name]
-  tag = options[:tag]
+  name = UI.input("What's your Release name? ")
+  tag = UI.input("What's your Github tag? ")
 
   #increment Version
   increment_version_code
@@ -65,13 +65,12 @@ platform :android do
     desc "    fastlane android create_changelog"
     desc "or"
     desc "    fastlane android create_changelog since_tag:v1.0.0"
-    private_lane :create_changelog do |options|
+    private_lane :create_changelog do
       path = '../app/build.gradle'
       re = /versionCode\s+(\d+)/
-
       s = File.read(path)
       version = s[re, 1].to_i
-      tag = options[:since_tag] || last_git_tag
+      tag = last_git_tag
       changelog = "What's new in AutoVision #{version}\n\n"
       changelog += sh "git log --oneline --decorate --merges  --grep=\"^Merge pull\" --format=\"* %s %b\" #{tag}.. | cut -d' ' -f1,5,8-"
       File.open("../Changelog.txt", "w") { |file| file.write(changelog) }
@@ -92,7 +91,7 @@ platform :android do
         name: release_name,
         tag_name: tag,
         description: (File.read("../Changelog.txt") rescue "No changelog provided"),
-        is_draft: true
+        is_draft: false
       )
     end
 
