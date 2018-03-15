@@ -43,11 +43,11 @@ platform :android do
   message: "Version Bump to - #{version}"
   )
 
-  #Push changes to git remote
-  push_to_git_remote
-
   #draft release to github
   draft_release(name:name,tag:tag)
+
+  #Push changes to git remote
+  push_to_git_remote
 
   #upload
   upload_to_play_store(track: 'beta')
