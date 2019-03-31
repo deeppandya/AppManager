@@ -11,9 +11,6 @@ public class PackageChangeReceiver extends BroadcastReceiver {
 
     private OnPackageChanged onPackageChanged;
 
-    public PackageChangeReceiver() {
-    }
-
     public PackageChangeReceiver(OnPackageChanged onPackageChanged) {
         this.onPackageChanged = onPackageChanged;
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);

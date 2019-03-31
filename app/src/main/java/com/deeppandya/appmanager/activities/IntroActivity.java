@@ -175,7 +175,7 @@ public class IntroActivity extends AdsActivity {
             @Override
             public void onClick(View v) {
 
-                loadInterstitialAd();
+//                loadInterstitialAd();
 
                 //  update 1st time pref
                 PersistanceManager.setUserFirstTime(IntroActivity.this, false);

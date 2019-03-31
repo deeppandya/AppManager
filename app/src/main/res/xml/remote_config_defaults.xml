@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <defaultsMap>
     <entry>
-        <key>first_screen_banner</key>
-        <value>false</value>
-    </entry>
-
-    <entry>
         <key>uninstall_banner</key>
         <value>true</value>
     </entry>
@@ -28,5 +23,4 @@
         <key>launch_interstitial</key>
         <value>true</value>
     </entry>
-
 </defaultsMap>
