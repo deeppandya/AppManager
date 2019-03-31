@@ -27,7 +27,7 @@ public class AdsFragment extends Fragment {
     }
 
     public void showBanner(View rootView){
-        facebookAdView = new AdView(getActivity(), "291507681300038_291507847966688", AdSize.BANNER_HEIGHT_50);
+        facebookAdView = new AdView(getActivity(), "291507681300038_309703206147152", AdSize.BANNER_HEIGHT_50);
 
         // Find the Ad Container
         LinearLayout adContainer = (LinearLayout) rootView.findViewById(R.id.bannerView);

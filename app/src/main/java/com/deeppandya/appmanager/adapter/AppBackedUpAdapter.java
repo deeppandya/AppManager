@@ -1,4 +1,4 @@
-package com.deeppandya.appmanager.fragments;
+package com.deeppandya.appmanager.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

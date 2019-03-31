@@ -48,7 +48,7 @@ public class AppManager extends MultiDexApplication {
 
         AppBrain.init(this);
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5984394588344927~5614205493");
+//        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5984394588344927~5614205493");
 
     }
 

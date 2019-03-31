@@ -15,7 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class FirebaseNotificationService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
+    private static final String TAG = "FirebaseMsgService";
 
     /**
      * Called when message is received.
@@ -78,6 +78,7 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        assert notificationManager != null;
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 }
